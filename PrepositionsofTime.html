@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>In, On, At - Interactive Quiz</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: Arial, sans-serif; background: #f4f7fb;
+    color: #263238;
+  }
+  .container {
+    max-width: 850px; margin: 0 auto; padding: 24px 16px 50px;
+  }
+  .card {
+    background: white; border-radius: 18px; padding: 28px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08); margin-top: 20px;
+  }
+  h1 { margin-top: 0; color: #234e70; }
+  .intro { line-height: 1.6; }
+  .rule-box {
+    background: #eef6ff; border-left: 5px solid #39739d;
+    padding: 14px 18px; border-radius: 8px; line-height: 1.6;
+  }
+  .progress-wrap { margin: 20px 0; }
+  .progress-bar { height: 12px; background: #e3e8ee; border-radius: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0; background: #39739d; transition: width .3s; }
+  .question-number { font-weight: bold; color: #39739d; }
+  .question { font-size: 1.35rem; line-height: 1.5; margin: 15px 0 22px; }
+  .option {
+    display: block; width: 100%; text-align: left; padding: 14px 16px;
+    margin: 10px 0; border: 2px solid #d8dee6; border-radius: 10px;
+    background: white; cursor: pointer; font-size: 1rem;
+  }
+  .option:hover { background: #f4f8fc; }
+  .option.correct { border-color: #2e8b57; background: #eaf8ef; }
+  .option.wrong { border-color: #c94c4c; background: #fff0f0; }
+  .option:disabled { cursor: default; }
+  .feedback { margin-top: 16px; padding: 14px; border-radius: 10px; display:none; line-height:1.5; }
+  .feedback.show { display:block; }
+  .feedback.good { background:#eaf8ef; color:#205b39; }
+  .feedback.bad { background:#fff0f0; color:#7a2e2e; }
+  .hint {
+    margin: 15px 0; padding: 12px 14px; background:#fff8dc;
+    border-radius:10px; display:none; line-height:1.5;
+  }
+  .hint.show { display:block; }
+  button {
+    border: 0; border-radius: 10px; padding: 12px 18px;
+    background:#39739d; color:red; font-size:1rem; cursor:pointer;
+  }
+  button:hover { opacity:.9; }
+  button.secondary { background:#6c757d; }
+  .actions { display:flex; gap:10px; margin-top:20px; flex-wrap:wrap; }
+  .score { font-size:2rem; font-weight:bold; color:#39739d; }
+  .review { margin-top:20px; }
+  .review-item { padding:12px 0; border-bottom:1px solid #ddd; line-height:1.5; }
+  .hidden { display:none; }
+  .small { color:#667; font-size:.92rem; }
+  @media(max-width:600px) {
+    .card { padding:20px; }
+    .question { font-size:1.15rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="startScreen" class="card">
+    <h1>In, On, At — Interactive Quiz</h1>
+    <p class="intro">
+      Test your knowledge of <strong>prepositions of time</strong>.
+      There are 50 questions. Questions 1–25 have hints; questions 26–50 do not.
+    </p>
+
+    <div class="rule-box">
+      <strong>Quick reminder</strong><br>
+      <strong>IN</strong> → months, years, seasons, parts of the day<br>
+      <strong>ON</strong> → days and dates<br>
+      <strong>AT</strong> → exact times, noon, midnight
+    </div>
+
+    <p class="small">You can take the quiz offline after saving this HTML file.</p>
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div id="quizScreen" class="card hidden">
+    <div class="progress-wrap">
+      <div id="progressText">Question 1 of 50</div>
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    </div>
+
+    <div class="question-number" id="questionNumber"></div>
+    <div class="question" id="questionText"></div>
+
+    <button id="hintButton" class="secondary" onclick="showHint()">Show Hint</button>
+    <div id="hintBox" class="hint"></div>
+
+    <div id="options"></div>
+    <div id="feedback" class="feedback"></div>
+
+    <div class="actions">
+      <button id="nextButton" onclick="nextQuestion()" class="hidden">Next Question</button>
+    </div>
+  </div>
+
+  <div id="resultScreen" class="card hidden">
+    <h1>Quiz Complete!</h1>
+    <p>Your score:</p>
+    <div id="score" class="score"></div>
+    <p id="scoreMessage"></p>
+
+    <div class="actions">
+      <button onclick="restartQuiz()">Try Again</button>
+      <button class="secondary" onclick="showReview()">Review Answers</button>
+    </div>
+
+    <div id="review" class="review hidden"></div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // 1-25 WITH HINTS
+  ["My birthday is □ July.", "in", "July is a month."],
+  ["We go to school □ Monday.", "on", "Monday is a day of the week."],
+  ["The movie starts □ 6 o'clock.", "at", "6 o'clock is an exact time."],
+  ["I wake up □ the morning.", "in", "Morning is a part of the day."],
+  ["We visit Grandma □ Sunday.", "on", "Sunday is a day of the week."],
+  ["Dad comes home □ 7:30 p.m.", "at", "7:30 p.m. is an exact time."],
+  ["Flowers bloom □ spring.", "in", "Spring is a season."],
+  ["My birthday party is □ Saturday.", "on", "Saturday is a day of the week."],
+  ["We eat lunch □ noon.", "at", "Noon refers to a specific time."],
+  ["School starts □ August.", "in", "August is a month."],
+  ["I like to read □ the evening.", "in", "Evening is a part of the day."],
+  ["Our test is □ Tuesday.", "on", "Tuesday is a day of the week."],
+  ["The baby sleeps □ midnight.", "at", "Midnight refers to a specific time."],
+  ["We have a holiday □ December.", "in", "December is a month."],
+  ["The football game is □ Friday.", "on", "Friday is a day of the week."],
+  ["I brush my teeth □ the morning.", "in", "Morning is a part of the day."],
+  ["The train arrives □ 9:15 a.m.", "at", "9:15 a.m. is an exact time."],
+  ["It is very cold □ winter.", "in", "Winter is a season."],
+  ["We have music class □ Wednesday.", "on", "Wednesday is a day of the week."],
+  ["The party begins □ 5 o'clock.", "at", "5 o'clock is an exact time."],
+  ["My family travels □ June.", "in", "June is a month."],
+  ["We play games □ the afternoon.", "in", "Afternoon is a part of the day."],
+  ["The school picnic is □ March 15th.", "on", "March 15th is a specific date."],
+  ["The clock rings □ 8:00 a.m.", "at", "8:00 a.m. is an exact time."],
+  ["Leaves fall □ autumn.", "in", "Autumn is a season."],
+
+  // 26-50 WITHOUT HINTS
+  ["We will go swimming □ Saturday.", "on", ""],
+  ["My brother was born □ 2017.", "in", ""],
+  ["The class begins □ 9:00 a.m.", "at", ""],
+  ["I usually do my homework □ the afternoon.", "in", ""],
+  ["We celebrate Christmas □ December.", "in", ""],
+  ["The library is closed □ Sunday.", "on", ""],
+  ["The baby wakes up □ midnight.", "at", ""],
+  ["We go to the park □ the evening.", "in", ""],
+  ["Our school opened □ 2005.", "in", ""],
+  ["The bus comes □ 7:45 a.m.", "at", ""],
+  ["I have swimming lessons □ Tuesday.", "on", ""],
+  ["We like to play outside □ summer.", "in", ""],
+  ["The show starts □ noon.", "at", ""],
+  ["My grandparents visit us □ January.", "in", ""],
+  ["We have a spelling test □ Friday.", "on", ""],
+  ["I eat breakfast □ the morning.", "in", ""],
+  ["The fireworks begin □ 10 p.m.", "at", ""],
+  ["Our sports day is □ November 12th.", "on", ""],
+  ["We wear warm clothes □ winter.", "in", ""],
+  ["I go to bed □ 9 o'clock.", "at", ""],
+  ["My family goes on vacation □ May.", "in", ""],
+  ["We have art class □ Thursday.", "on", ""],
+  ["The sun rises □ the morning.", "in", ""],
+  ["The school play is □ April 20th.", "on", ""],
+  ["We eat dinner □ 7:30 p.m.", "at", ""]
+];
+
+let current = 0;
+let score = 0;
+let answers = [];
+let answered = false;
+
+const choices = ["in", "on", "at"];
+
+function startQuiz() {
+  current = 0;
+  score = 0;
+  answers = [];
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("quizScreen").classList.remove("hidden");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  const hasHint = current < 25;
+
+  document.getElementById("progressText").textContent =
+    `Question ${current + 1} of ${questions.length}`;
+  document.getElementById("progressFill").style.width =
+    `${((current + 1) / questions.length) * 100}%`;
+
+  document.getElementById("questionNumber").textContent =
+    `Question ${current + 1}${hasHint ? " — Hint available" : ""}`;
+
+  document.getElementById("questionText").textContent = q[0];
+
+  const hintButton = document.getElementById("hintButton");
+  const hintBox = document.getElementById("hintBox");
+
+  if (hasHint) {
+    hintButton.classList.remove("hidden");
+    hintBox.textContent = "";
+    hintBox.classList.remove("show");
+  } else {
+    hintButton.classList.add("hidden");
+    hintBox.classList.remove("show");
+  }
+
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+  feedback.textContent = "";
+
+  const nextButton = document.getElementById("nextButton");
+  nextButton.classList.add("hidden");
+  nextButton.textContent =
+    current === questions.length - 1 ? "See My Score" : "Next Question";
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+
+  choices.forEach(choice => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = choice;
+    button.onclick = () => selectAnswer(choice, button);
+    options.appendChild(button);
+  });
+}
+
+function showHint() {
+  if (current < 25) {
+    const hintBox = document.getElementById("hintBox");
+    hintBox.textContent = "Hint: " + questions[current][2];
+    hintBox.classList.add("show");
+  }
+}
+
+function selectAnswer(choice, clickedButton) {
+  if (answered) return;
+  answered = true;
+
+  const correct = questions[current][1];
+  const optionButtons = document.querySelectorAll(".option");
+
+  optionButtons.forEach(button => {
+    button.disabled = true;
+    if (button.textContent === correct) {
+      button.classList.add("correct");
+    }
+  });
+
+  const feedback = document.getElementById("feedback");
+
+  if (choice === correct) {
+    score++;
+    clickedButton.classList.add("correct");
+    feedback.className = "feedback show good";
+    feedback.innerHTML =
+      `<strong>Correct!</strong> "${correct}" is the right preposition here.`;
+  } else {
+    clickedButton.classList.add("wrong");
+    feedback.className = "feedback show bad";
+    feedback.innerHTML =
+      `<strong>Not quite.</strong> The correct answer is <strong>${correct}</strong>. ` +
+      explanation(correct);
+  }
+
+  answers.push({ question: questions[current][0], chosen: choice, correct });
+  document.getElementById("nextButton").classList.remove("hidden");
+}
+
+function explanation(answer) {
+  if (answer === "in")
+    return "Use <strong>in</strong> with months, years, seasons, and parts of the day.";
+  if (answer === "on")
+    return "Use <strong>on</strong> with days and specific dates.";
+  return "Use <strong>at</strong> with exact times, noon, and midnight.";
+}
+
+function nextQuestion() {
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  document.getElementById("quizScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+
+  document.getElementById("score").textContent =
+    `${score} / ${questions.length}`;
+
+  let message = "";
+  const percent = score / questions.length * 100;
+
+  if (percent >= 90) message = "Excellent work! You really know your prepositions of time!";
+  else if (percent >= 75) message = "Great job! A little more practice will make you even stronger.";
+  else if (percent >= 60) message = "Good effort! Review IN, ON, and AT and try again.";
+  else message = "Keep practicing! You will get better with each try.";
+
+  document.getElementById("scoreMessage").textContent = message;
+}
+
+function showReview() {
+  const review = document.getElementById("review");
+  review.classList.remove("hidden");
+  review.innerHTML = "<h2>Answer Review</h2>";
+
+  answers.forEach((a, i) => {
+    const div = document.createElement("div");
+    div.className = "review-item";
+    const result = a.chosen === a.correct ? "✓ Correct" : "✗ Needs review";
+    div.innerHTML =
+      `<strong>${i + 1}. ${result}</strong><br>` +
+      `${a.question.replace("□", `<strong>${a.chosen}</strong>`)}<br>` +
+      `Correct answer: <strong>${a.correct}</strong><br>` +
+      explanation(a.correct);
+    review.appendChild(div);
+  });
+}
+
+function restartQuiz() {
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("review").classList.add("hidden");
+  startQuiz();
+}
+</script>
+</body>
+</html>
