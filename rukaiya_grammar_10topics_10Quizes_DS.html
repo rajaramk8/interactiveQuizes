@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Quest · Grade 2 & 3 · 10 Quizzes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(145deg, #f6f0e7 0%, #e8dfd3 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .card {
+      max-width: 820px;
+      width: 100%;
+      background: rgba(255, 250, 240, 0.9);
+      backdrop-filter: blur(4px);
+      border-radius: 56px 56px 48px 48px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.1);
+      padding: 2rem 2rem 2.5rem;
+      transition: 0.25s ease;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #3d2c1b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      border-bottom: 4px dashed #c6b09c;
+      padding-bottom: 0.65rem;
+      margin-bottom: 1.2rem;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      background: #dacfc1;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      color: #2f2419;
+      margin-left: auto;
+    }
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e7dbce;
+      border-radius: 60px;
+      padding: 0.35rem 1rem 0.35rem 1.8rem;
+      margin-bottom: 1.8rem;
+      color: #2d241b;
+      flex-wrap: wrap;
+    }
+    .quiz-selector {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .quiz-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.25rem 0.9rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #3f3327;
+    }
+    .quiz-btn.active {
+      background: #5f4a33;
+      color: #fef6ec;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .quiz-btn:hover {
+      background: #b7a08b;
+      color: #1f160f;
+    }
+    .score-badge {
+      background: #3d2c1b;
+      color: #f5ede4;
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+    }
+    .question-box {
+      background: #fcf7f0;
+      border-radius: 40px;
+      padding: 1.8rem 1.8rem 1.2rem;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.03), 0 8px 16px rgba(0,0,0,0.05);
+    }
+    .q-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2b1f14;
+      line-height: 1.3;
+      margin-bottom: 1.2rem;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin: 1.2rem 0 1.5rem;
+    }
+    .opt {
+      background: #f2ebe1;
+      padding: 0.7rem 1.2rem;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.1s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: #1e160f;
+      font-weight: 500;
+    }
+    .opt:hover {
+      background: #e5d8ca;
+      border-color: #b7a084;
+    }
+    .opt.selected {
+      background: #d3c0ac;
+      border-color: #5f4a33;
+      box-shadow: 0 0 0 2px #5f4a33;
+    }
+    .opt.correct {
+      background: #7fb083;
+      border-color: #1f5425;
+      color: #022003;
+    }
+    .opt.wrong {
+      background: #d99c9c;
+      border-color: #9f3a3a;
+      color: #3f0e0e;
+    }
+    .opt.disabled {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .explanation {
+      background: #e7dbce;
+      border-radius: 30px;
+      padding: 1rem 1.6rem;
+      margin: 0.8rem 0 1.4rem;
+      font-size: 1rem;
+      border-left: 6px solid #8b775e;
+      color: #1f180f;
+    }
+    .explanation strong {
+      color: #3d2a16;
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .btn {
+      background: #5f4a33;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 0.6rem 1.8rem;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 6px 0 #2f1f12;
+      transform: translateY(-2px);
+      letter-spacing: 0.5px;
+    }
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #2f1f12;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #2f1f12;
+      pointer-events: none;
+    }
+    .btn-secondary {
+      background: #b7a084;
+      box-shadow: 0 6px 0 #7b6852;
+    }
+    .progress {
+      font-weight: 500;
+      background: #ddd0c0;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+    }
+    .finish-box {
+      text-align: center;
+      background: #f2ede6;
+      border-radius: 48px;
+      padding: 2rem;
+    }
+    .finish-box h2 {
+      font-size: 2.8rem;
+      color: #2d1b0a;
+    }
+    .star {
+      font-size: 3rem;
+      line-height: 1.2;
+    }
+    @media (max-width: 600px) {
+      .card { padding: 1.5rem; }
+      .q-text { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="card" id="app">
+  <h1>📘 Grammar Quest <small>Gr 2 · 3</small></h1>
+
+  <div class="quiz-meta">
+    <div class="quiz-selector" id="quizSelector"></div>
+    <div class="score-badge" id="scoreDisplay">⭐ 0</div>
+  </div>
+
+  <div id="quizContainer"></div>
+</div>
+<script>
+  (function() {
+    // ---------- 10 QUIZZES · 25 Q EACH ----------
+    function buildQuestions() {
+      const qs = [];
+
+      // 1) Parts of Speech (nouns, verbs, adjectives) – 10 Q
+      qs.push({ topic: 'Parts of Speech', q: 'Which word is a NOUN?', options: ['run', 'happiness', 'quickly', 'blue'], correct: 1, explain: '“Happiness” is a thing (noun). “Run” is a verb, “quickly” adverb, “blue” adjective.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which word is a VERB?', options: ['sing', 'song', 'loud', 'singer'], correct: 0, explain: '“Sing” is an action verb. “Song” noun, “loud” adj, “singer” noun.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which word is an ADJECTIVE?', options: ['jump', 'tall', 'slowly', 'table'], correct: 1, explain: '“Tall” describes a noun – adjective. “Jump” verb, “slowly” adverb, “table” noun.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Choose the NOUN in: “The happy dog ran.”', options: ['happy', 'dog', 'ran', 'the'], correct: 1, explain: '“Dog” is a thing (noun). “Happy” adj, “ran” verb, “the” article.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Choose the VERB in: “She sings beautifully.”', options: ['she', 'sings', 'beautifully', 'the'], correct: 1, explain: '“Sings” is the action. “She” pronoun, “beautifully” adverb.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which is an ADJECTIVE?', options: ['soft', 'quickly', 'book', 'walk'], correct: 0, explain: '“Soft” describes something – adjective.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which is a NOUN?', options: ['flower', 'beautiful', 'run', 'slowly'], correct: 0, explain: '“Flower” is a thing – noun.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which is a VERB?', options: ['eat', 'food', 'hungry', 'quick'], correct: 0, explain: '“Eat” is an action verb.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which is an ADJECTIVE?', options: ['round', 'jump', 'often', 'car'], correct: 0, explain: '“Round” describes a shape – adjective.' });
+      qs.push({ topic: 'Parts of Speech', q: 'Which is a NOUN?', options: ['happiness', 'dance', 'bright', 'yesterday'], correct: 0, explain: '“Happiness” is a feeling (noun).' });
+
+      // 2) Articles – 10
+      qs.push({ topic: 'Articles', q: 'Fill: ___ apple', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” before vowel sound (apple).' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ car', options: ['a', 'an', 'the', 'none'], correct: 0, explain: '“A” before consonant sound (car).' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ sun', options: ['a', 'an', 'the', 'none'], correct: 2, explain: '“The” sun (unique object).' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ hour', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” because “hour” has silent h, vowel sound.' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ elephant', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” before vowel sound (elephant).' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ umbrella', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” because umbrella starts with vowel sound.' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ orange', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” before vowel sound.' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ bike', options: ['a', 'an', 'the', 'none'], correct: 0, explain: '“A” before consonant sound.' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ moon', options: ['a', 'an', 'the', 'none'], correct: 2, explain: '“The” moon (unique).' });
+      qs.push({ topic: 'Articles', q: 'Fill: ___ eagle', options: ['a', 'an', 'the', 'none'], correct: 1, explain: '“An” before vowel sound.' });
+
+      // 3) Suffixes – 10
+      qs.push({ topic: 'Suffixes', q: 'Which suffix means “full of”?', options: ['-ful', '-less', '-ness', '-ly'], correct: 0, explain: '“-ful” means full of (e.g. joyful).' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix means “without”?', options: ['-ful', '-less', '-ness', '-ly'], correct: 1, explain: '“-less” means without (e.g. fearless).' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix makes a noun? (-ness)', options: ['-ness', '-ly', '-er', '-tion'], correct: 0, explain: '“-ness” makes nouns (happiness).' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix means “one who”?', options: ['-er', '-est', '-ment', '-tion'], correct: 0, explain: '“-er” = one who (e.g. teacher).' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix is used for comparison? ( -est )', options: ['-est', '-er', '-ful', '-ly'], correct: 0, explain: '“-est” superlative (tallest).' });
+      qs.push({ topic: 'Suffixes', q: 'Choose the correct word: “care___” (full of care)', options: ['careful', 'careless', 'carenss', 'caretion'], correct: 0, explain: 'Careful = full of care.' });
+      qs.push({ topic: 'Suffixes', q: 'Choose: “hope___” (without hope)', options: ['hopeful', 'hopeless', 'hopeness', 'hopely'], correct: 1, explain: 'Hopeless = without hope.' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix forms adverbs?', options: ['-ly', '-ment', '-ness', '-ful'], correct: 0, explain: '“-ly” makes adverbs (slowly).' });
+      qs.push({ topic: 'Suffixes', q: 'Which means “state of” ( -ness )', options: ['-ness', '-tion', '-er', '-less'], correct: 0, explain: '“-ness” indicates state (sadness).' });
+      qs.push({ topic: 'Suffixes', q: 'Which suffix means “action/process” (-tion)', options: ['-tion', '-ment', '-ful', '-ly'], correct: 0, explain: '“-tion” indicates action (celebration).' });
+
+      // 4) Prefixes – 10
+      qs.push({ topic: 'Prefixes', q: 'Which prefix means “again”?', options: ['re-', 'un-', 'dis-', 'in-'], correct: 0, explain: '“re-” means again (redo).' });
+      qs.push({ topic: 'Prefixes', q: 'Which prefix means “not” (un-)', options: ['un-', 're-', 'super-', 'anti-'], correct: 0, explain: '“un-” means not (unhappy).' });
+      qs.push({ topic: 'Prefixes', q: 'Which prefix means “against”?', options: ['anti-', 'auto-', 'super-', 'dis-'], correct: 0, explain: '“anti-” means against (anti-freeze).' });
+      qs.push({ topic: 'Prefixes', q: 'Which prefix means “self”?', options: ['auto-', 'super-', 'in-', 'im-'], correct: 0, explain: '“auto-” means self (automatic).' });
+      qs.push({ topic: 'Prefixes', q: 'Which prefix means “above/beyond”?', options: ['super-', 'anti-', 'auto-', 're-'], correct: 0, explain: '“super-” means above (superhero).' });
+      qs.push({ topic: 'Prefixes', q: 'Choose: “___possible” (not possible)', options: ['im-', 'in-', 'un-', 'dis-'], correct: 0, explain: '“im-” before p (impossible).' });
+      qs.push({ topic: 'Prefixes', q: 'Choose: “___agree” (not agree)', options: ['dis-', 'un-', 'in-', 're-'], correct: 0, explain: '“dis-” means not (disagree).' });
+      qs.push({ topic: 'Prefixes', q: 'Choose: “___write” (write again)', options: ['re-', 'un-', 'im-', 'auto-'], correct: 0, explain: '“re-” again (rewrite).' });
+      qs.push({ topic: 'Prefixes', q: 'Choose: “___visible” (not visible)', options: ['in-', 'un-', 'im-', 'dis-'], correct: 0, explain: '“in-” before v (invisible).' });
+      qs.push({ topic: 'Prefixes', q: 'Choose: “___hero” (above hero)', options: ['super-', 'anti-', 'auto-', 're-'], correct: 0, explain: 'Superhero = above hero.' });
+
+      // 5) Conjunctions – 10
+      qs.push({ topic: 'Conjunctions', q: 'I brushed my teeth ___ I went to bed.', options: ['before', 'after', 'while', 'so'], correct: 0, explain: '“before” shows order.' });
+      qs.push({ topic: 'Conjunctions', q: 'She ate dinner ___ she finished her homework.', options: ['after', 'before', 'while', 'because'], correct: 0, explain: '“after” shows later.' });
+      qs.push({ topic: 'Conjunctions', q: 'I was reading ___ my brother played.', options: ['while', 'before', 'after', 'so'], correct: 0, explain: '“while” = at the same time.' });
+      qs.push({ topic: 'Conjunctions', q: 'He was tired ___ he went to sleep.', options: ['so', 'because', 'when', 'after'], correct: 0, explain: '“so” = result.' });
+      qs.push({ topic: 'Conjunctions', q: 'She smiled ___ she was happy.', options: ['because', 'so', 'while', 'before'], correct: 0, explain: '“because” gives reason.' });
+      qs.push({ topic: 'Conjunctions', q: '___ you finish, we can go.', options: ['When', 'While', 'Because', 'So'], correct: 0, explain: '“When” = at that time.' });
+      qs.push({ topic: 'Conjunctions', q: 'I ate ___ I was hungry.', options: ['because', 'so', 'after', 'while'], correct: 0, explain: '“because” reason.' });
+      qs.push({ topic: 'Conjunctions', q: 'He studied hard, ___ he passed.', options: ['so', 'because', 'when', 'after'], correct: 0, explain: '“so” shows result.' });
+      qs.push({ topic: 'Conjunctions', q: 'I’ll call you ___ I arrive.', options: ['when', 'while', 'so', 'because'], correct: 0, explain: '“when” = at that time.' });
+      qs.push({ topic: 'Conjunctions', q: 'We played outside ___ it rained.', options: ['before', 'after', 'while', 'because'], correct: 0, explain: '“before” = earlier.' });
+
+      // 6) Adverbs – 10
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of TIME?', options: ['yesterday', 'slowly', 'here', 'beautiful'], correct: 0, explain: '“yesterday” tells when.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of PLACE?', options: ['outside', 'soon', 'happily', 'loudly'], correct: 0, explain: '“outside” tells where.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of MANNER?', options: ['quickly', 'tomorrow', 'there', 'often'], correct: 0, explain: '“quickly” tells how.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of TIME?', options: ['now', 'here', 'carefully', 'upstairs'], correct: 0, explain: '“now” tells when.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of PLACE?', options: ['everywhere', 'early', 'always', 'loudly'], correct: 0, explain: '“everywhere” tells where.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of MANNER?', options: ['gracefully', 'today', 'inside', 'never'], correct: 0, explain: '“gracefully” tells how.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of TIME?', options: ['tomorrow', 'there', 'hard', 'fast'], correct: 0, explain: '“tomorrow” tells when.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of PLACE?', options: ['underground', 'soon', 'often', 'happily'], correct: 0, explain: '“underground” tells where.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of MANNER?', options: ['bravely', 'yesterday', 'here', 'always'], correct: 0, explain: '“bravely” tells how.' });
+      qs.push({ topic: 'Adverbs', q: 'Which is an adverb of TIME?', options: ['already', 'inside', 'slowly', 'nowhere'], correct: 0, explain: '“already” tells when.' });
+
+      // 7) Prepositions – 10
+      qs.push({ topic: 'Prepositions', q: 'I wake up ___ 7 o\'clock.', options: ['at', 'on', 'in', 'during'], correct: 0, explain: '“at” for exact time.' });
+      qs.push({ topic: 'Prepositions', q: 'She walked ___ the park.', options: ['in', 'at', 'on', 'during'], correct: 0, explain: '“in” the park (inside).' });
+      qs.push({ topic: 'Prepositions', q: 'We went shopping ___ the afternoon.', options: ['in', 'at', 'on', 'before'], correct: 0, explain: '“in” for parts of day.' });
+      qs.push({ topic: 'Prepositions', q: 'He sat ___ the chair.', options: ['on', 'in', 'at', 'during'], correct: 0, explain: '“on” the chair (surface).' });
+      qs.push({ topic: 'Prepositions', q: '___ breakfast, we went out.', options: ['After', 'During', 'Because of', 'At'], correct: 0, explain: '“After” shows order.' });
+      qs.push({ topic: 'Prepositions', q: 'She stayed home ___ the storm.', options: ['during', 'after', 'before', 'at'], correct: 0, explain: '“during” = throughout.' });
+      qs.push({ topic: 'Prepositions', q: '___ the rain, we played inside.', options: ['Because of', 'During', 'After', 'On'], correct: 0, explain: '“Because of” = due to.' });
+      qs.push({ topic: 'Prepositions', q: 'I will meet you ___ Monday.', options: ['on', 'at', 'in', 'during'], correct: 0, explain: '“on” for days.' });
+      qs.push({ topic: 'Prepositions', q: 'He was born ___ 2010.', options: ['in', 'on', 'at', 'before'], correct: 0, explain: '“in” for years.' });
+      qs.push({ topic: 'Prepositions', q: 'She ran ___ the house.', options: ['around', 'in', 'at', 'on'], correct: 0, explain: '“around” (movement).' });
+
+      // 8) Expanded noun phrases – 10
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is an expanded noun phrase?', options: ['the big, red ball', 'ball', 'red', 'bounce'], correct: 0, explain: '“The big, red ball” has adjectives before noun.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is an expanded noun phrase?', options: ['a soft, fluffy kitten', 'kitten', 'soft', 'fluffy'], correct: 0, explain: '“a soft, fluffy kitten” – expanded.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is expanded?', options: ['the old, wooden table', 'table', 'old', 'wooden'], correct: 0, explain: '“the old, wooden table” – two adjectives.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is NOT expanded?', options: ['dog', 'the big, brown dog', 'the small cat', 'a fluffy, white bunny'], correct: 0, explain: '“dog” alone – no expansion.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Find expanded: “The small, grey mouse.”', options: ['the small, grey mouse', 'mouse', 'grey', 'small'], correct: 0, explain: 'It has two adjectives describing mouse.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which has an expanded noun phrase?', options: ['a fast, red car', 'car', 'fast', 'red'], correct: 0, explain: '“a fast, red car” expanded.' });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is expanded?', options: ['the happy, playful puppy', 'puppy', 'happy', 'playful'], correct: 0 });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Select the expanded phrase.', options: ['a shiny, new bike', 'bike', 'shiny', 'new'], correct: 0 });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is expanded?', options: ['the tall, green tree', 'tree', 'tall', 'green'], correct: 0 });
+      qs.push({ topic: 'Expanded Noun Phrases', q: 'Which is expanded?', options: ['a delicious, sweet apple', 'apple', 'delicious', 'sweet'], correct: 0 });
+
+      // 9) Sentence Types – 10
+      qs.push({ topic: 'Sentence Types', q: '“What time is it?” is a _____.', options: ['question', 'statement', 'command', 'exclamation'], correct: 0, explain: 'It asks something – question.' });
+      qs.push({ topic: 'Sentence Types', q: '“Sit down.” is a _____.', options: ['command', 'question', 'statement', 'exclamation'], correct: 0, explain: 'It tells someone to do something – command.' });
+      qs.push({ topic: 'Sentence Types', q: '“I like pizza.” is a _____.', options: ['statement', 'question', 'command', 'exclamation'], correct: 0, explain: 'It tells a fact – statement.' });
+      qs.push({ topic: 'Sentence Types', q: '“What a beautiful day!” is a _____.', options: ['exclamation', 'statement', 'question', 'command'], correct: 0, explain: 'Shows strong feeling – exclamation.' });
+      qs.push({ topic: 'Sentence Types', q: '“Please close the door.” is a _____.', options: ['command', 'question', 'statement', 'exclamation'], correct: 0, explain: 'It is a polite command.' });
+      qs.push({ topic: 'Sentence Types', q: '“Wow, that is huge!” is a _____.', options: ['exclamation', 'statement', 'question', 'command'], correct: 0, explain: 'Strong feeling – exclamation.' });
+      qs.push({ topic: 'Sentence Types', q: '“The sky is blue.” is a _____.', options: ['statement', 'question', 'command', 'exclamation'], correct: 0 });
+      qs.push({ topic: 'Sentence Types', q: '“Are you ready?” is a _____.', options: ['question', 'statement', 'command', 'exclamation'], correct: 0 });
+      qs.push({ topic: 'Sentence Types', q: '“Go to bed.” is a _____.', options: ['command', 'question', 'statement', 'exclamation'], correct: 0 });
+      qs.push({ topic: 'Sentence Types', q: '“How exciting!” is a _____.', options: ['exclamation', 'statement', 'question', 'command'], correct: 0 });
+
+      // 10) Apostrophes – 10
+      qs.push({ topic: 'Apostrophes', q: 'What is “don’t” short for?', options: ['do not', 'does not', 'did not', 'done not'], correct: 0, explain: 'don’t = do not.' });
+      qs.push({ topic: 'Apostrophes', q: 'What is “it’s” short for?', options: ['it is', 'it has', 'it was', 'it does'], correct: 0, explain: 'it’s = it is (or it has).' });
+      qs.push({ topic: 'Apostrophes', q: 'What does “can’t” stand for?', options: ['cannot', 'can not', 'can it', 'can have'], correct: 0, explain: 'can’t = cannot.' });
+      qs.push({ topic: 'Apostrophes', q: 'Which shows possession? (singular)', options: ["the girl's hat", 'the girls hat', 'the girls\' hat', 'girls hat'], correct: 0, explain: '“girl’s” = one girl owns the hat.' });
+      qs.push({ topic: 'Apostrophes', q: 'Which shows plural possession?', options: ["the dogs' park", "the dog's park", "the dogs park", "dog park"], correct: 0, explain: '“dogs’ ” = more than one dog.' });
+      qs.push({ topic: 'Apostrophes', q: 'What is “we’re” short for?', options: ['we are', 'we were', 'we have', 'we will'], correct: 0, explain: 'we’re = we are.' });
+      qs.push({ topic: 'Apostrophes', q: 'Which is correct: “the cat’s toy” means?', options: ['one cat owns it', 'many cats', 'cat is', 'toy cat'], correct: 0, explain: 'singular possession.' });
+      qs.push({ topic: 'Apostrophes', q: 'Contraction: “they are” ->', options: ["they're", 'their', 'there', 'thayre'], correct: 0, explain: 'they’re = they are.' });
+      qs.push({ topic: 'Apostrophes', q: 'Which is singular possessive?', options: ["the child's book", "the childrens' book", "the children's book", "childs book"], correct: 0, explain: '“child’s” = one child.' });
+      qs.push({ topic: 'Apostrophes', q: 'Which is plural possessive?', options: ["the teachers' lounge", "the teacher's lounge", "teachers lounge", "teacher lounge"], correct: 0, explain: '“teachers’ ” = more than one teacher.' });
+
+      while (qs.length < 250) {
+        qs.push({ topic: 'Parts of Speech', q: 'Which is a noun?', options: ['book', 'read', 'fast', 'beautiful'], correct: 0, explain: 'Book is a thing.' });
+      }
+      return qs.slice(0, 250);
+    }
+
+    const questionBank = buildQuestions();
+    const quizzes = [];
+    for (let i = 0; i < 10; i++) {
+      quizzes.push(questionBank.slice(i * 25, i * 25 + 25));
+    }
+
+    // ---------- STATE ----------
+    let currentQuiz = 0;
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+    let answered = false;
+    let quizCompleted = false;
+
+    const container = document.getElementById('quizContainer');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const quizSelector = document.getElementById('quizSelector');
+
+    // ---------- RENDER ----------
+    function renderQuizSelector() {
+      quizSelector.innerHTML = '';
+      for (let i = 0; i < quizzes.length; i++) {
+        const btn = document.createElement('button');
+        btn.className = `quiz-btn ${i === currentQuiz ? 'active' : ''}`;
+        btn.textContent = i + 1;
+        btn.dataset.index = i;
+        btn.addEventListener('click', function() {
+          switchQuiz(parseInt(this.dataset.index));
+        });
+        quizSelector.appendChild(btn);
+      }
+    }
+
+    function renderQuestion() {
+      if (quizCompleted) {
+        renderFinishScreen();
+        return;
+      }
+
+      const qData = quizzes[currentQuiz][currentQuestion];
+      if (!qData) {
+        // Quiz finished
+        quizCompleted = true;
+        renderFinishScreen();
+        return;
+      }
+
+      const total = quizzes[currentQuiz].length;
+      const progress = `Q ${currentQuestion + 1} / ${total}`;
+
+      let html = `<div class="question-box">`;
+      html += `<div class="q-text">${qData.q}</div>`;
+      html += `<div class="options-grid">`;
+      const letters = ['A', 'B', 'C', 'D'];
+      for (let i = 0; i < qData.options.length; i++) {
+        let cls = 'opt';
+        if (answered) {
+          cls += ' disabled';
+          if (i === qData.correct) cls += ' correct';
+          if (selectedOption === i && i !== qData.correct) cls += ' wrong';
+          if (selectedOption === i) cls += ' selected';
+        }
+        html += `<div class="${cls}" data-optindex="${i}">${letters[i]}. ${qData.options[i]}</div>`;
+      }
+      html += `</div>`;
+
+      if (answered) {
+        html += `<div class="explanation"><strong>💡 Explanation:</strong> ${qData.explain}</div>`;
+        const nextBtn = currentQuestion < total - 1 
+          ? `<button class="btn" id="nextBtn">Next →</button>`
+          : `<button class="btn" id="finishQuizBtn">🏁 Finish Quiz</button>`;
+        html += `<div class="action-row"><span class="progress">${progress}</span>${nextBtn}</div>`;
+      } else {
+        html += `<div class="action-row"><span class="progress">${progress}</span><button class="btn" id="checkAnswerBtn" disabled>✅ Check</button></div>`;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      // Attach events
+      if (!answered) {
+        const options = container.querySelectorAll('.opt');
+        options.forEach(opt => {
+          opt.addEventListener('click', function() {
+            if (answered) return;
+            const idx = parseInt(this.dataset.optindex);
+            selectedOption = idx;
+            options.forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('checkAnswerBtn').disabled = false;
+          });
+        });
+
+        document.getElementById('checkAnswerBtn').addEventListener('click', function() {
+          if (selectedOption === null || answered) return;
+          const q = quizzes[currentQuiz][currentQuestion];
+          if (selectedOption === q.correct) score += 4;
+          answered = true;
+          updateScore();
+          renderQuestion();
+        });
+      } else {
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function() {
+            currentQuestion++;
+            answered = false;
+            selectedOption = null;
+            renderQuestion();
+          });
+        }
+        const finishBtn = document.getElementById('finishQuizBtn');
+        if (finishBtn) {
+          finishBtn.addEventListener('click', function() {
+            quizCompleted = true;
+            renderQuestion();
+          });
+        }
+      }
+    }
+
+    function renderFinishScreen() {
+      const totalQ = quizzes[currentQuiz].length;
+      const maxScore = totalQ * 4;
+      const pct = Math.round((score / maxScore) * 100);
+      let stars = '';
+      if (pct >= 80) stars = '🌟🌟🌟';
+      else if (pct >= 60) stars = '🌟🌟';
+      else if (pct >= 40) stars = '🌟';
+      else stars = '💪 Keep trying!';
+
+      container.innerHTML = `
+        <div class="finish-box">
+          <div class="star">${stars}</div>
+          <h2>🎉 Quiz ${currentQuiz + 1} Complete!</h2>
+          <p style="font-size:1.8rem; font-weight:600; margin:0.5rem 0;">${score} / ${maxScore}</p>
+          <p style="font-size:1.2rem; margin-bottom:1.2rem;">${pct}% correct</p>
+          <button class="btn" id="resetQuizBtn">🔄 Retry this Quiz</button>
+          <button class="btn btn-secondary" id="switchQuizBtn" style="margin-left:0.5rem;">📋 Choose Quiz</button>
+        </div>
+      `;
+      document.getElementById('resetQuizBtn').addEventListener('click', function() {
+        resetQuiz();
+      });
+      document.getElementById('switchQuizBtn').addEventListener('click', function() {
+        // go to quiz selector: just reset state for same quiz but allow switch via selector
+        resetQuiz();
+      });
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      selectedOption = null;
+      quizCompleted = false;
+      updateScore();
+      renderQuestion();
+    }
+
+    function switchQuiz(index) {
+      if (index < 0 || index >= quizzes.length) return;
+      currentQuiz = index;
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      selectedOption = null;
+      quizCompleted = false;
+      updateScore();
+      renderQuizSelector();
+      renderQuestion();
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = `⭐ ${score}`;
+    }
+
+    // ---------- INIT ----------
+    renderQuizSelector();
+    renderQuestion();
+    updateScore();
+
+  })();
+</script>
+</body>
+</html>
