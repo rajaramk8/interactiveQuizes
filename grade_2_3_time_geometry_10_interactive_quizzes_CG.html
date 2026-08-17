@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grade 2–3 Maths: Time & Geometry — 10 Interactive Quizzes</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#17202a;font-family:Arial,sans-serif;line-height:1.5}
+header{background:linear-gradient(135deg,#174f8c,#3182c4);color:#fff;text-align:center;padding:28px 15px}
+header h1{margin:0 0 6px;font-size:clamp(1.6rem,4vw,2.5rem)}header p{margin:0}
+main{max-width:1050px;margin:auto;padding:18px 14px 50px}.card{background:#fff;border-radius:18px;padding:24px;margin:18px 0;box-shadow:0 7px 24px #00000012}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px}.quizBtn{background:#fff;border:2px solid #d5dfeb;border-radius:14px;padding:18px;text-align:left;cursor:pointer;font-size:1rem;color:#17202a}.quizBtn:hover{border-color:#2c72ad;background:#f4f9ff}.quizBtn b{display:block;color:#205d95;font-size:1.12rem}
+.rules{background:#eef6ff;border-left:5px solid #2c72ad;padding:14px 18px;border-radius:9px}.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.badge{background:#eef6ff;color:#174f8c;border-radius:999px;padding:8px 13px;font-weight:700}
+.progress{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:15px 0 20px}.fill{height:100%;background:#2c72ad;width:0;transition:.25s}.small{color:#667085;font-size:.92rem}.topic{font-weight:700;color:#667085;margin:7px 0}.question{font-size:clamp(1.25rem,3vw,1.7rem);font-weight:700;margin:8px 0 17px}
+.imageBox{background:#fafcff;border:1px solid #e2e8f0;border-radius:14px;padding:10px;margin:10px 0 20px;text-align:center}.qimg{display:block;width:min(100%,560px);height:auto;margin:auto;max-height:320px}
+.options{display:grid;gap:12px}.option{width:100%;text-align:left;padding:16px 18px;border:2px solid #d5dce5;border-radius:12px;background:#fff;cursor:pointer;font-size:1.08rem;color:#17202a;min-height:58px}.option:hover{background:#f7faff;border-color:#6e9ec7}.option.correct{border-color:#198754;background:#eaf8ef;color:#155b37}.option.wrong{border-color:#d64545;background:#fff0f0;color:#7d2222}.option:disabled{cursor:default}
+.feedback{display:none;margin-top:18px;padding:18px;border-radius:12px;font-size:1.04rem}.feedback.show{display:block}.good{background:#eaf8ef;border:1px solid #a9dfbd}.bad{background:#fff0f0;border:1px solid #efb4b4}.explainImg{margin-top:13px;background:#fff;border-radius:10px;padding:8px}
+.action{border:0;border-radius:11px;padding:13px 19px;font-size:1rem;cursor:pointer;background:#2c72ad;color:#fff}.secondary{background:#6c757d}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.hidden{display:none!important}
+.result{text-align:center;background:#eef6ff;border-radius:16px;padding:25px}.score{font-size:clamp(2.7rem,8vw,4.2rem);font-weight:800;color:#205d95}.reviewItem{border-bottom:1px solid #e5e7eb;padding:15px 0}.correctText{color:#198754;font-weight:700}.wrongText{color:#c0392b;font-weight:700}
+footer{text-align:center;color:#667085;font-size:.9rem;padding:10px}
+@media(max-width:600px){.card{padding:18px}.option{font-size:1rem}}
+</style>
+</head>
+<body>
+<header><h1>Maths Challenge: Time & Geometry</h1><p>Grade 2–3 • 10 Interactive Quizzes • 25 Questions Each • 4 Marks Each</p></header>
+<main>
+<section id="home" class="card">
+<h2>Choose a Quiz</h2>
+<p>Every quiz has 25 mixed questions. Each question is worth <b>4 marks</b>, so each quiz is out of <b>100</b>.</p>
+<div class="rules">
+<b>Equal overall weightage:</b> 125 questions are Measurement and 125 are Geometry — 250 questions in total.
+<br><br>
+<b>Images are built into this HTML using SVG.</b> No image website, login, server, or internet connection is needed after the file is saved.
+</div>
+<div id="quizList" class="grid" style="margin-top:22px">
+  <button class="quizBtn" onclick="start(0)"><b>Quiz 1</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(1)"><b>Quiz 2</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(2)"><b>Quiz 3</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(3)"><b>Quiz 4</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(4)"><b>Quiz 5</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(5)"><b>Quiz 6</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(6)"><b>Quiz 7</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(7)"><b>Quiz 8</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(8)"><b>Quiz 9</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+  <button class="quizBtn" onclick="start(9)"><b>Quiz 10</b>25 mixed questions<br><span class="small">Time + Geometry • 100 marks</span></button>
+</div>
+</section>
+
+<section id="quiz" class="card hidden">
+<div class="top"><div id="quizTitle" class="badge"></div><div id="scoreBadge" class="badge">Score: 0 / 100</div></div>
+<div class="progress"><div id="fill" class="fill"></div></div>
+<div id="count" class="small"></div><div id="topic" class="topic"></div>
+<div id="question" class="question"></div><div id="imageBox" class="imageBox"></div>
+<div id="options" class="options"></div><div id="feedback" class="feedback"></div>
+<div class="actions"><button id="next" class="action hidden" onclick="nextQ()">Next Question</button></div>
+</section>
+
+<section id="result" class="card hidden">
+<h2>Quiz Complete! 🎉</h2>
+<div class="result"><div>Your Score</div><div id="finalScore" class="score">0 / 100</div><div id="percent"></div><p id="message"></p></div>
+<div class="actions"><button class="action" onclick="goHome()">Choose Another Quiz</button><button class="action secondary" onclick="restart()">Try Again</button><button class="action secondary" onclick="review()">Review Answers</button></div>
+<div id="reviewBox" class="hidden"></div>
+</section>
+</main>
+<footer>Standalone HTML • No expiry date • Works offline in a modern browser</footer>
+
+<script>
+/* ---------- IMAGE DRAWING: all illustrations are generated locally ---------- */
+function esc(s){return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+function clock(h,m){
+ let S='<svg class="qimg" viewBox="0 0 240 240"><circle cx="120" cy="120" r="105" fill="white" stroke="#17324d" stroke-width="5">';
+ for(let n=1;n<=12;n++){let a=n*Math.PI/6-Math.PI/2,x=120+78*Math.cos(a),y=120+78*Math.sin(a);S+=`<text x="${x}" y="${y+6}" text-anchor="middle" font-size="18" font-weight="700" fill="#17324d">${n}</text>`}
+ let ha=(h%12+m/60)*Math.PI/6-Math.PI/2,ma=m*Math.PI/30-Math.PI/2;
+ S+=`</circle><line x1="120" y1="120" x2="${120+45*Math.cos(ha)}" y2="${120+45*Math.sin(ha)}" stroke="#17324d" stroke-width="8" stroke-linecap="round"/><line x1="120" y1="120" x2="${120+78*Math.cos(ma)}" y2="${120+78*Math.sin(ma)}" stroke="#c0392b" stroke-width="5" stroke-linecap="round"/><circle cx="120" cy="120" r="7" fill="#17324d"/></svg>`;
+ return S;
+}
+function digital(h,m){
+ let t=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+ return `<svg class="qimg" viewBox="0 0 360 150"><rect x="18" y="20" width="324" height="100" rx="18" fill="#17324d"/><text x="180" y="88" text-anchor="middle" font-size="48" font-family="monospace" font-weight="700" fill="white">${t}</text><text x="180" y="142" text-anchor="middle" font-size="13" fill="#51606f">24-hour clock</text></svg>`;
+}
+function timeline(a,b){
+ return `<svg class="qimg" viewBox="0 0 560 150"><line x1="55" y1="75" x2="505" y2="75" stroke="#17324d" stroke-width="7"/><circle cx="55" cy="75" r="10" fill="#2367b1"/><circle cx="505" cy="75" r="10" fill="#c0392b"/><text x="55" y="45" text-anchor="middle" font-weight="700" fill="#17324d">${fmt(a)}</text><text x="505" y="45" text-anchor="middle" font-weight="700" fill="#17324d">${fmt(b)}</text><text x="280" y="112" text-anchor="middle" fill="#51606f">time passes →</text><text x="280" y="140" text-anchor="middle" font-size="13" fill="#51606f">Compare the distance between the two times</text></svg>`;
+}
+function fmt(x){let h=Math.floor(x/60),m=x%60;return String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")}
+function shape(k){
+ let b="";
+ if(k==="triangle")b='<polygon points="210,25 80,210 340,210" fill="#dbeeff" stroke="#17324d" stroke-width="5"/>';
+ if(k==="square")b='<rect x="105" y="25" width="210" height="210" fill="#e7f6ea" stroke="#17324d" stroke-width="5"/>';
+ if(k==="rectangle")b='<rect x="55" y="70" width="310" height="140" fill="#fff2d8" stroke="#17324d" stroke-width="5"/>';
+ if(k==="circle")b='<circle cx="210" cy="135" r="100" fill="#f8e5f2" stroke="#17324d" stroke-width="5"/>';
+ if(k==="pentagon")b='<polygon points="210,25 350,105 295,235 125,235 70,105" fill="#e8e0ff" stroke="#17324d" stroke-width="5"/>';
+ if(k==="cube")b='<polygon points="105,65 235,65 305,105 175,105" fill="#e6f0ff" stroke="#17324d" stroke-width="4"/><polygon points="105,65 105,185 175,225 175,105" fill="#d8e8fa" stroke="#17324d" stroke-width="4"/><polygon points="175,105 305,105 305,185 175,225" fill="#c5ddf4" stroke="#17324d" stroke-width="4"/>';
+ if(k==="cuboid")b='<polygon points="70,70 270,70 350,110 150,110" fill="#fff0d2" stroke="#17324d" stroke-width="4"/><polygon points="70,70 70,185 150,225 150,110" fill="#f9e4b6" stroke="#17324d" stroke-width="4"/><polygon points="150,110 350,110 350,185 150,225" fill="#f3d899" stroke="#17324d" stroke-width="4"/>';
+ if(k==="cylinder")b='<ellipse cx="210" cy="45" rx="100" ry="30" fill="#e2f5f2" stroke="#17324d" stroke-width="4"/><rect x="110" y="45" width="200" height="145" fill="#ccefeb" stroke="#17324d" stroke-width="4"/><ellipse cx="210" cy="190" rx="100" ry="30" fill="#b8e5df" stroke="#17324d" stroke-width="4"/>';
+ if(k==="horizontal")b='<line x1="60" y1="130" x2="360" y2="130" stroke="#17324d" stroke-width="9"/>';
+ if(k==="vertical")b='<line x1="210" y1="25" x2="210" y2="235" stroke="#17324d" stroke-width="9"/>';
+ if(k==="parallel")b='<line x1="65" y1="70" x2="355" y2="70" stroke="#17324d" stroke-width="8"/><line x1="65" y1="190" x2="355" y2="190" stroke="#17324d" stroke-width="8"/><text x="210" y="140" text-anchor="middle" font-size="20" fill="#c0392b">parallel</text>';
+ if(k==="perpendicular")b='<line x1="210" y1="25" x2="210" y2="235" stroke="#17324d" stroke-width="8"/><line x1="65" y1="130" x2="355" y2="130" stroke="#17324d" stroke-width="8"/><rect x="210" y="130" width="30" height="30" fill="none" stroke="#c0392b" stroke-width="4"/>';
+ if(k.startsWith("angle")){let d=+k.slice(5),r=115,a=-d*Math.PI/180; b=`<line x1="210" y1="135" x2="335" y2="135" stroke="#17324d" stroke-width="8"/><line x1="210" y1="135" x2="${210+125*Math.cos(a)}" y2="${135+125*Math.sin(a)}" stroke="#17324d" stroke-width="8"/><path d="M 260 135 A 50 50 0 0 0 ${210+50*Math.cos(a)} ${135+50*Math.sin(a)}" fill="none" stroke="#c0392b" stroke-width="4"/><text x="210" y="175" text-anchor="middle" font-size="17" fill="#c0392b">${d}°</text>`}
+ return `<svg class="qimg" viewBox="0 0 420 270">${b}</svg>`;
+}
+function make(q,opts,ans,exp,img){return {q,options:opts,answer:ans,explanation:exp,img};}
+
+/* ---------- QUESTION BANKS: 250 questions total ---------- */
+let M=[],G=[];
+
+/* Measurement: analogue / 12-hour / 24-hour */
+const times=[[3,0],[7,30],[10,15],[2,45],[5,20],[8,40],[11,55],[1,35],[4,10],[9,50],[6,25],[12,5],
+[2,20],[7,45],[10,30],[5,55],[8,15],[11,40],[1,10],[4,35],[9,25],[6,50],[3,35],[10,5],[12,40],
+[1,55],[8,5],[4,25],[7,10],[9,35],[11,15],[2,50],[5,5],[6,40],[3,20],[10,45],[12,25],[1,30],[8,55],[4,50],[7,35],[9,10]];
+times.forEach(([h,m])=>{
+ let a=`${h}:${String(m).padStart(2,"0")}`, d=[`${((h)%12)+1}:${String(m).padStart(2,"0")}`,`${h}:${String((m+5)%60).padStart(2,"0")}`,`${h}:${String((m+55)%60).padStart(2,"0")}`];
+ M.push(make("What time does the analogue clock show?",[a,...d],a,`The minute hand shows ${m} minutes and the hour hand is at or just past ${h}. Therefore the time is ${a}.`,clock(h,m)));
+});
+
+/* Measurement: 12/24 conversions */
+const c24=[[0,0],[6,30],[9,15],[12,0],[13,20],[15,45],[18,10],[21,30],[23,55],[14,5],[16,40],[19,25],[22,50],[11,35],[17,5],[20,15],[2,25],[12,45],[13,55],[23,10],[5,50]];
+c24.forEach(([h,m])=>{
+ let ans=h===0?`12:${String(m).padStart(2,"0")} AM`:h<12?`${h}:${String(m).padStart(2,"0")} AM`:h===12?`12:${String(m).padStart(2,"0")} PM`:`${h-12}:${String(m).padStart(2,"0")} PM`;
+ let o=[ans,`${h}:${String(m).padStart(2,"0")}`,`${(h+1)%24}:${String(m).padStart(2,"0")} AM`,`${Math.max(0,h-1)}:${String(m).padStart(2,"0")} PM`];
+ M.push(make(`Convert ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")} to 12-hour time.`,o,ans,
+ `For times after 12 noon, subtract 12 from the hour. Midnight is 12 AM and noon is 12 PM. So ${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")} is ${ans}.`,digital(h,m)));
+});
+const c12=[[1,15,"AM"],[8,45,"AM"],[12,30,"PM"],[2,10,"PM"],[5,55,"PM"],[11,20,"PM"],[12,5,"AM"],[9,40,"PM"],[3,35,"PM"],[7,25,"AM"]];
+c12.forEach(([h,m,ap])=>{
+ let hh=(h%12)+(ap==="PM"?12:0),ans=`${String(hh).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+ M.push(make(`Write ${h}:${String(m).padStart(2,"0")} ${ap} in 24-hour time.`,[ans,`${h}:${String(m).padStart(2,"0")}`,`${String((hh+1)%24).padStart(2,"0")}:${String(m).padStart(2,"0")}`,`${String(Math.max(0,hh-1)).padStart(2,"0")}:${String(m).padStart(2,"0")}`],ans,
+ `A PM time after noon uses 12 more than the 12-hour clock hour. ${h}:${String(m).padStart(2,"0")} ${ap} becomes ${ans}.`,digital(hh,m)));
+});
+
+/* Measurement: estimate/read time */
+[[2,12,"2:10"],[4,28,"4:30"],[7,47,"7:45"],[9,4,"9:00"],[11,52,"11:50"],[1,26,"1:25"],[5,33,"5:35"],[8,58,"9:00"],[10,21,"10:20"],[3,39,"3:40"],[6,17,"6:15"],[12,53,"12:55"],
+[2,43,"2:45"],[7,2,"7:00"],[9,37,"9:35"],[4,52,"4:50"],[11,18,"11:20"],[1,42,"1:40"],[5,8,"5:10"],[8,31,"8:30"],[10,47,"10:45"],[3,23,"3:25"],[6,58,"7:00"],[12,22,"12:20"],[2,7,"2:05"],[7,33,"7:35"],[9,51,"9:50"],[4,16,"4:15"],[11,43,"11:45"],[1,27,"1:25"],[5,48,"5:50"],[8,12,"8:10"],[10,34,"10:35"],[3,52,"3:50"],[6,36,"6:35"],[12,8,"12:10"],[2,31,"2:30"],[7,58,"8:00"],[9,13,"9:15"],[4,39,"4:40"],[11,6,"11:05"],[1,53,"1:55"]].forEach(([h,m,a])=>{
+ let o=[a,`${h}:${String(m).padStart(2,"0")}`,`${((h)%12)+1}:00`,`${Math.max(1,h-1)}:00`];
+ M.push(make("Estimate the time to the nearest 5 minutes.",o,a,`The minute hand is closest to the ${a.split(":")[1]}-minute mark, so ${a} is the best estimate.`,clock(h,m)));
+});
+
+/* Measurement: duration comparisons / calculations */
+const pairs=[
+["Cartoon",25,"Lesson",45],["Bus ride",35,"Walk",20],["Movie",90,"Game",30],["Breakfast",15,"School",60],
+["Reading",40,"Drawing",25],["Nap",60,"Snack",10],["Football",50,"Story",20],["Homework",70,"Play",40],
+["Bath",20,"Dinner",35],["Trip",120,"Class",60],["Movie",75,"Cartoon",25],["Music",30,"Reading",45],
+["Game",55,"Break",15],["Walk",25,"Cycling",40],["Lesson",50,"Art",35],["Show",100,"Game",50],
+["Breakfast",20,"Lunch",30],["Study",65,"Play",35],["Bus",45,"Car ride",25],["Story",18,"Game",28],
+["Drawing",35,"Reading",50],["Practice",80,"Break",20],["Train",95,"Bus",55],["Play",30,"Homework",70],
+["Swimming",45,"Running",25],["Film",110,"Cartoon",20],["Dinner",40,"Snack",15],["Class",55,"Assembly",30],
+["Travel",75,"Walk",45],["Game",65,"Lesson",35],["Art",40,"Music",25],["Bike",50,"Walk",30],
+["Show",85,"Game",35],["Study",90,"Play",45],["Lunch",35,"Breakfast",20],["Reading",55,"Drawing",35],
+["Trip",150,"Lesson",50],["Football",70,"Story",15],["Bus",40,"Walk",15],["Movie",105,"Game",45]];
+pairs.forEach(([a,am,b,bm])=>{
+ let ans=am>bm?`${a} is longer`:`${b} is longer`;
+ M.push(make(`Which event lasts longer: ${a} (${am} min) or ${b} (${bm} min)?`,[ans,`${a} is shorter`,`${b} is shorter`,"They are equal"],ans,
+ `Compare the minutes. ${a} lasts ${am} minutes and ${b} lasts ${bm} minutes, so ${ans.toLowerCase()}.`,timeline(0,Math.max(am,bm))));
+});
+[[550,585],[620,665],[795,840],[940,985],[470,510],[695,730],[845,920],[1095,1140],[360,425],[815,875]].forEach(([a,b])=>{
+ let n=b-a,ans=`${n} minutes`;
+ M.push(make(`How long is the event from ${fmt(a)} to ${fmt(b)}?`,[ans,`${n+5} minutes`,`${n-5} minutes`,`${n+15} minutes`],ans,
+ `Count forward from ${fmt(a)} to ${fmt(b)}. The elapsed time is ${n} minutes.`,timeline(a,b)));
+});
+
+/* Geometry: 2-D and 3-D shapes */
+const shapes=[
+["triangle","How many sides does this shape have?","3",["3","4","5","6"],"A triangle has 3 straight sides."],
+["square","How many equal sides does a square have?","4",["2","3","4","5"],"A square has 4 equal sides."],
+["rectangle","Which description is true?","4 sides and 4 right angles",["3 sides","4 sides and 4 right angles","5 sides","no straight sides"],"A rectangle has 4 sides and 4 right angles."],
+["circle","Does this shape have straight sides?","No",["Yes, 1","Yes, 2","No","Yes, 4"],"A circle is curved all the way around and has no straight sides."],
+["pentagon","How many sides does a pentagon have?","5",["3","4","5","6"],"A pentagon has 5 sides."],
+["cube","How many faces does a cube have?","6",["4","6","8","12"],"A cube has 6 square faces."],
+["cuboid","How many faces does a cuboid have?","6",["4","5","6","8"],"A cuboid has 6 rectangular faces."],
+["cylinder","Which everyday object is shaped like a cylinder?","A can",["A book","A can","A dice","A plate"],"A can has two circular ends and a curved surface, like a cylinder."],
+["cube","How many vertices does a cube have?","8",["6","8","10","12"],"A cube has 8 vertices (corners)."],
+["cuboid","How many vertices does a cuboid have?","8",["4","6","8","10"],"A cuboid has 8 vertices."],
+["triangle","Which shape has 3 vertices?","triangle",["circle","triangle","rectangle","cube"],"A triangle has 3 corners, called vertices."],
+["square","Which shape has 4 equal sides and 4 right angles?","square",["square","triangle","circle","pentagon"],"Those are key properties of a square."],
+["rectangle","Which statement is true about a rectangle?","Opposite sides are equal",["All sides are always equal","Opposite sides are equal","It has 3 sides","It has 1 vertex"],"A rectangle has two pairs of equal opposite sides."],
+["cylinder","How many flat circular faces does a cylinder have?","2",["1","2","3","0"],"A cylinder has two flat circular faces."],
+["cube","Which 3-D shape has only square faces?","cube",["cube","cylinder","sphere","triangle"],"A cube has six square faces."],
+["circle","Which 2-D shape has no vertices?","circle",["triangle","square","circle","pentagon"],"A circle has no corners or vertices."],
+["pentagon","Which shape has 5 sides?","pentagon",["triangle","square","pentagon","circle"],"A pentagon has five sides."],
+["cuboid","Which object is most like a cuboid?","A cereal box",["A ball","A cereal box","A plate","A coin"],"A cereal box is box-shaped like a cuboid."],
+["cylinder","Which 3-D shape has two circular ends?","cylinder",["cube","cylinder","triangle","square"],"A cylinder has two circular faces."],
+["cube","Which object is most like a cube?","A dice",["A ball","A dice","A can","A plate"],"A standard dice is cube-shaped."]
+];
+shapes.forEach(s=>G.push(make(s[1],s[3],s[2],s[4],shape(s[0]))));
+while(G.length<42){let s=shapes[G.length%shapes.length];G.push(make("Which shape property is shown in the picture?",[s[2],"A different property","No property","All of these"],s[2],s[4],shape(s[0])));}
+
+/* Geometry: angles and turns (42) */
+[[90,"right angle"],[180,"straight angle"],[360,"full turn"],[45,"acute angle"],[120,"obtuse angle"],[30,"acute angle"],[90,"right angle"],[150,"obtuse angle"],[60,"acute angle"],[180,"straight angle"],
+[75,"acute angle"],[100,"obtuse angle"],[90,"right angle"],[160,"obtuse angle"],[15,"acute angle"],[110,"obtuse angle"],[90,"right angle"],[135,"obtuse angle"],[60,"acute angle"],[180,"straight angle"],
+[30,"acute angle"],[125,"obtuse angle"],[90,"right angle"],[45,"acute angle"],[170,"obtuse angle"],[80,"acute angle"],[90,"right angle"],[140,"obtuse angle"],[20,"acute angle"],[180,"straight angle"],
+[70,"acute angle"],[115,"obtuse angle"],[90,"right angle"],[155,"obtuse angle"],[35,"acute angle"],[90,"right angle"],[165,"obtuse angle"],[55,"acute angle"],[180,"straight angle"],[105,"obtuse angle"],[90,"right angle"],[25,"acute angle"]].forEach(([d,t])=>{
+ let o=["acute angle","right angle","obtuse angle","straight angle"];
+ G.push(make(`What type of angle is shown?`,o,t,`The angle is ${d}°. Acute angles are less than 90°, a right angle is exactly 90°, obtuse angles are between 90° and 180°, and a straight angle is 180°.`,shape("angle"+d)));
+});
+
+/* Geometry: lines */
+const lineQs=[
+["horizontal","Which line is horizontal?","horizontal",["horizontal","vertical","curved","diagonal"]],
+["vertical","Which line is vertical?","vertical",["horizontal","vertical","curved","diagonal"]],
+["parallel","Which pair of lines never meets?","parallel",["parallel","perpendicular","curved","crossing"]],
+["perpendicular","Which pair meets at a right angle?","perpendicular",["parallel","perpendicular","curved","sloping"]],
+["horizontal","A line going left to right is usually called what?","horizontal",["horizontal","vertical","curved","diagonal"]],
+["vertical","A line going up and down is usually called what?","vertical",["horizontal","vertical","curved","diagonal"]],
+["parallel","Railway tracks are a useful example of what?","parallel lines",["parallel lines","perpendicular lines","a curve","a point"]],
+["perpendicular","The corner of a square is formed by what kind of lines?","perpendicular lines",["parallel lines","perpendicular lines","curved lines","no lines"]],
+["parallel","What do parallel lines do?","Stay the same distance apart",["Always cross","Stay the same distance apart","Make a circle","Stop being lines"]],
+["perpendicular","What do perpendicular lines make?","A right angle",["A full turn","A right angle","No angle","A circle"]],
+["horizontal","Which line looks like the horizon?","horizontal",["horizontal","vertical","curved","spiral"]],
+["vertical","Which line looks like a standing pole?","vertical",["horizontal","vertical","curved","spiral"]],
+["parallel","Opposite sides of a rectangle are usually what?","parallel",["parallel","perpendicular","curved","the same line"]],
+["perpendicular","Adjacent sides of a rectangle are what?","perpendicular",["parallel","perpendicular","curved","never meeting"]],
+["horizontal","The top and bottom edges of a rectangle can be what?","horizontal and parallel",["horizontal and parallel","vertical and perpendicular","curved","one point"]],
+["vertical","The left and right edges of a rectangle can be what?","vertical and parallel",["horizontal","vertical and parallel","curved","perpendicular only"]],
+["parallel","Which word means lines that stay the same distance apart?","parallel",["parallel","perpendicular","vertical","horizontal"]],
+["perpendicular","Which word describes lines crossing at 90°?","perpendicular",["parallel","perpendicular","horizontal","vertical"]],
+["horizontal","Which is not horizontal?","vertical",["horizontal","level","left to right","vertical"]],
+["vertical","Which is not vertical?","horizontal",["vertical","upright","up and down","horizontal"]],
+["parallel","Can parallel lines meet if they continue forever?","No",["Yes","No","Only in a square","Only when vertical"]],
+["perpendicular","Can perpendicular lines meet?","Yes",["Yes","No","Never","Only if curved"]],
+["parallel","Which pair is parallel?","Two opposite sides of a rectangle",["Two opposite sides of a rectangle","Two sides at a corner","A circle and a line","Two crossing lines"]],
+["perpendicular","Which pair is perpendicular?","Two sides meeting at a square corner",["Two opposite sides","Two sides meeting at a square corner","Two railway tracks","Two horizontal lines"]],
+["horizontal","Which direction is horizontal?","Left to right",["Up and down","Left to right","Around a circle","Diagonal only"]],
+["vertical","Which direction is vertical?","Up and down",["Left to right","Up and down","Around","Sideways"]],
+["parallel","Two horizontal lines that never meet are what?","parallel",["parallel","perpendicular","one line","a turn"]],
+["perpendicular","Two lines crossing at 90° are what?","perpendicular",["parallel","perpendicular","horizontal","vertical"]],
+["horizontal","Which line is flat across the page?","horizontal",["horizontal","vertical","curved","spiral"]],
+["vertical","Which line is upright on the page?","vertical",["horizontal","vertical","curved","spiral"]],
+["parallel","Which pair has the same direction and never meets?","parallel",["parallel","perpendicular","crossing","curved"]],
+["perpendicular","Which pair makes four right angles where they cross?","perpendicular",["parallel","perpendicular","curved","diagonal"]]
+];
+lineQs.forEach(x=>G.push(make(x[1],x[3],x[2],`The picture shows ${x[2]}. ${x[4]||"The direction or relationship of the lines tells us the answer."}`,shape(x[0]))));
+
+/* Ensure exact equal overall weight: 125 + 125 */
+M=M.slice(0,125);G=G.slice(0,125);
+let all=[...M.map(x=>({...x,topic:"Measurement"})),...G.map(x=>({...x,topic:"Geometry – Properties of Shapes"}))];
+
+/* Deterministic shuffle, then split into 10 quizzes of 25 */
+let seed=20260817;
+function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+for(let i=all.length-1;i>0;i--){let j=Math.floor(rnd()*(i+1));[all[i],all[j]]=[all[j],all[i]]}
+let quizzes=Array.from({length:10},(_,i)=>all.slice(i*25,(i+1)*25));
+
+let qi=0,qn=0,score=0,answered=false,answers=[];
+function init(){ /* Quiz buttons are embedded directly in the page for maximum browser compatibility. */ }
+function start(i){qi=i;qn=0;score=0;answers=[];document.getElementById("home").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("quiz").classList.remove("hidden");render();window.scrollTo({top:0,behavior:"smooth"})}
+function render(){
+ answered=false;let x=quizzes[qi][qn];
+ document.getElementById("quizTitle").textContent=`Quiz ${qi+1}`;
+ document.getElementById("scoreBadge").textContent=`Score: ${score} / 100`;
+ document.getElementById("count").textContent=`Question ${qn+1} of 25 • 4 marks`;
+ document.getElementById("topic").textContent=x.topic;
+ document.getElementById("question").textContent=x.q;
+ document.getElementById("fill").style.width=((qn+1)/25*100)+"%";
+ document.getElementById("imageBox").innerHTML=x.img;
+ let box=document.getElementById("options");box.innerHTML="";
+ x.options.forEach(o=>{let b=document.createElement("button");b.className="option";b.textContent=o;b.onclick=()=>answer(o,b);box.appendChild(b)});
+ let fb=document.getElementById("feedback");fb.className="feedback";fb.innerHTML="";
+ let nb=document.getElementById("next");nb.classList.add("hidden");nb.textContent=qn===24?"See My Score":"Next Question";
+}
+function answer(choice,clicked){
+ if(answered)return;answered=true;let x=quizzes[qi][qn];
+ document.querySelectorAll(".option").forEach(b=>{b.disabled=true;if(b.textContent===x.answer)b.classList.add("correct")});
+ let fb=document.getElementById("feedback"),again=`<div class="explainImg">${x.img}</div>`;
+ if(choice===x.answer){score+=4;clicked.classList.add("correct");fb.className="feedback show good";fb.innerHTML=`<b>Correct! +4 marks 🌟</b><br>${x.explanation}${again}`}
+ else{clicked.classList.add("wrong");fb.className="feedback show bad";fb.innerHTML=`<b>Not quite. 0 marks</b><br><b>Correct answer: ${esc(x.answer)}</b><br>${x.explanation}${again}`}
+ document.getElementById("scoreBadge").textContent=`Score: ${score} / 100`;
+ answers.push({...x,chosen:choice});document.getElementById("next").classList.remove("hidden");
+}
+function nextQ(){if(qn<24){qn++;render();window.scrollTo({top:0,behavior:"smooth"})}else results()}
+function results(){
+ document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ document.getElementById("finalScore").textContent=`${score} / 100`;document.getElementById("percent").textContent=`${score}%`;
+ document.getElementById("message").textContent=score>=90?"Excellent work! 🌟":score>=75?"Great job! Keep practising!":score>=60?"Good effort! Read the explanations and try again.":"Keep practising! Use the explanations to learn from each question.";
+ document.getElementById("reviewBox").classList.add("hidden");window.scrollTo({top:0,behavior:"smooth"});
+}
+function review(){
+ let box=document.getElementById("reviewBox");if(!box.classList.contains("hidden")){box.classList.add("hidden");return}
+ box.classList.remove("hidden");box.innerHTML="<h2>Answer Review</h2>";
+ answers.forEach((x,i)=>{let ok=x.chosen===x.answer,d=document.createElement("div");d.className="reviewItem";d.innerHTML=`<b>${i+1}. ${esc(x.q)}</b><br><span class="${ok?"correctText":"wrongText"}">${ok?"Correct — 4 marks":"Incorrect — 0 marks"}</span><br>Your answer: <b>${esc(x.chosen)}</b><br>Correct answer: <b>${esc(x.answer)}</b><br>${x.explanation}<div class="explainImg">${x.img}</div>`;box.appendChild(d)})
+}
+function restart(){document.getElementById("result").classList.add("hidden");start(qi)}
+function goHome(){document.getElementById("quiz").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("home").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}
+init();
+</script>
+</body>
+</html>

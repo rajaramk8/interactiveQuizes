@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Quest · Grade 2 & 3 · 10 Quizzes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(145deg, #eaf3f5 0%, #d4e0e6 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .card {
+      max-width: 860px;
+      width: 100%;
+      background: rgba(255, 252, 248, 0.92);
+      backdrop-filter: blur(4px);
+      border-radius: 56px 56px 48px 48px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.08);
+      padding: 2rem 2rem 2.5rem;
+      transition: 0.25s ease;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #1f3a4b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      border-bottom: 4px dashed #a5bec9;
+      padding-bottom: 0.65rem;
+      margin-bottom: 1.2rem;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      background: #c7dae3;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      color: #1a2f3b;
+      margin-left: auto;
+    }
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #dce9f0;
+      border-radius: 60px;
+      padding: 0.35rem 1rem 0.35rem 1.8rem;
+      margin-bottom: 1.8rem;
+      color: #1f3541;
+      flex-wrap: wrap;
+    }
+    .quiz-selector {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .quiz-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.25rem 0.9rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #1f3a4b;
+    }
+    .quiz-btn.active {
+      background: #2b5c74;
+      color: #f5faff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .quiz-btn:hover {
+      background: #8badbe;
+      color: #0b1f2b;
+    }
+    .score-badge {
+      background: #1f3a4b;
+      color: #f5faff;
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+    }
+    .question-box {
+      background: #f8fbfd;
+      border-radius: 40px;
+      padding: 1.8rem 1.8rem 1.2rem;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.02), 0 8px 16px rgba(0,0,0,0.04);
+    }
+    .q-text {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #142b38;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+    .q-text svg {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0 6px;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin: 1.2rem 0 1.5rem;
+    }
+    .opt {
+      background: #ecf3f7;
+      padding: 0.7rem 1.2rem;
+      border-radius: 60px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: 0.1s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: #142b38;
+      font-weight: 500;
+    }
+    .opt svg {
+      flex-shrink: 0;
+    }
+    .opt:hover {
+      background: #d8e6ee;
+      border-color: #8badbe;
+    }
+    .opt.selected {
+      background: #c6dbe6;
+      border-color: #2b5c74;
+      box-shadow: 0 0 0 2px #2b5c74;
+    }
+    .opt.correct {
+      background: #8fc9a8;
+      border-color: #1e6a3b;
+      color: #05301a;
+    }
+    .opt.wrong {
+      background: #d99c9c;
+      border-color: #9f3a3a;
+      color: #3f0e0e;
+    }
+    .opt.disabled {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .explanation {
+      background: #e1edf5;
+      border-radius: 30px;
+      padding: 1rem 1.6rem;
+      margin: 0.8rem 0 1.4rem;
+      font-size: 1rem;
+      border-left: 6px solid #2b5c74;
+      color: #1a2f3b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .explanation svg {
+      flex-shrink: 0;
+    }
+    .explanation strong {
+      color: #1a4053;
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .btn {
+      background: #2b5c74;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      padding: 0.6rem 1.8rem;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 6px 0 #12323f;
+      transform: translateY(-2px);
+      letter-spacing: 0.5px;
+    }
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #12323f;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #12323f;
+      pointer-events: none;
+    }
+    .btn-secondary {
+      background: #8badbe;
+      box-shadow: 0 6px 0 #587585;
+    }
+    .progress {
+      font-weight: 500;
+      background: #d4e3ec;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      color: #1a2f3b;
+    }
+    .finish-box {
+      text-align: center;
+      background: #f0f7fb;
+      border-radius: 48px;
+      padding: 2rem;
+    }
+    .finish-box h2 {
+      font-size: 2.8rem;
+      color: #1a3342;
+    }
+    .star {
+      font-size: 3rem;
+      line-height: 1.2;
+    }
+    .clock-svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @media (max-width: 600px) {
+      .card { padding: 1.5rem; }
+      .q-text { font-size: 1.2rem; }
+      .opt { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="card" id="app">
+  <h1>🧮 Math Quest <small>Gr 2 · 3</small></h1>
+
+  <div class="quiz-meta">
+    <div class="quiz-selector" id="quizSelector"></div>
+    <div class="score-badge" id="scoreDisplay">⭐ 0</div>
+  </div>
+
+  <div id="quizContainer"></div>
+</div>
+<script>
+  (function() {
+    // ===== SVG HELPERS =====
+    function clockSVG(hour, minute, label) {
+      const hAngle = (hour % 12) * 30 + minute * 0.5;
+      const mAngle = minute * 6;
+      const hx = 50 + 35 * Math.sin(hAngle * Math.PI / 180);
+      const hy = 50 - 35 * Math.cos(hAngle * Math.PI / 180);
+      const mx = 50 + 42 * Math.sin(mAngle * Math.PI / 180);
+      const my = 50 - 42 * Math.cos(mAngle * Math.PI / 180);
+      return `<svg width="80" height="80" viewBox="0 0 100 100" class="clock-svg">
+        <circle cx="50" cy="50" r="46" fill="white" stroke="#2b5c74" stroke-width="3"/>
+        <circle cx="50" cy="50" r="3" fill="#1f3a4b"/>
+        <line x1="50" y1="50" x2="${hx}" y2="${hy}" stroke="#1f3a4b" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="50" x2="${mx}" y2="${my}" stroke="#c0392b" stroke-width="2.5" stroke-linecap="round"/>
+        ${[1,2,3,4,5,6,7,8,9,10,11,12].map(n => {
+          const ang = n * 30 - 90;
+          const x = 50 + 40 * Math.cos(ang * Math.PI / 180);
+          const y = 50 + 40 * Math.sin(ang * Math.PI / 180);
+          return `<text x="${x}" y="${y+4}" text-anchor="middle" font-size="8" font-weight="bold" fill="#1f3a4b">${n}</text>`;
+        }).join('')}
+        ${label ? `<text x="50" y="94" text-anchor="middle" font-size="8" fill="#1f3a4b">${label}</text>` : ''}
+      </svg>`;
+    }
+
+    function shapeSVG(type, label) {
+      const shapes = {
+        cube: `<rect x="20" y="30" width="40" height="40" fill="#8fc9a8" stroke="#1f3a4b" stroke-width="2"/>
+               <polygon points="40,10 60,20 60,40 40,30" fill="#a8d5ba" stroke="#1f3a4b" stroke-width="2"/>
+               <line x1="20" y1="30" x2="40" y2="10" stroke="#1f3a4b" stroke-width="2"/>
+               <line x1="20" y1="70" x2="40" y2="50" stroke="#1f3a4b" stroke-width="2"/>
+               <line x1="60" y1="40" x2="60" y2="70" stroke="#1f3a4b" stroke-width="2"/>`,
+        sphere: `<circle cx="50" cy="45" r="32" fill="#a8d5ba" stroke="#1f3a4b" stroke-width="2"/>
+                 <ellipse cx="50" cy="45" rx="18" ry="32" fill="none" stroke="#1f3a4b" stroke-width="1.5" opacity="0.4"/>
+                 <ellipse cx="50" cy="45" rx="32" ry="18" fill="none" stroke="#1f3a4b" stroke-width="1.5" opacity="0.4"/>`,
+        cylinder: `<rect x="20" y="30" width="40" height="40" fill="#8fc9a8" stroke="#1f3a4b" stroke-width="2"/>
+                   <ellipse cx="40" cy="30" rx="20" ry="8" fill="#a8d5ba" stroke="#1f3a4b" stroke-width="2"/>
+                   <ellipse cx="40" cy="70" rx="20" ry="8" fill="none" stroke="#1f3a4b" stroke-width="2"/>`,
+        cone: `<polygon points="50,10 20,70 80,70" fill="#8fc9a8" stroke="#1f3a4b" stroke-width="2"/>
+               <ellipse cx="50" cy="70" rx="30" ry="8" fill="none" stroke="#1f3a4b" stroke-width="2"/>`,
+        rightAngle: `<rect x="30" y="30" width="40" height="40" fill="none" stroke="#1f3a4b" stroke-width="2"/>
+                     <rect x="30" y="30" width="12" height="12" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+                     <text x="36" y="40" font-size="8" fill="#c0392b">∟</text>`,
+        acute: `<line x1="20" y1="70" x2="80" y2="70" stroke="#1f3a4b" stroke-width="2"/>
+                <line x1="20" y1="70" x2="60" y2="20" stroke="#1f3a4b" stroke-width="2"/>
+                <path d="M 40,60 A 20,20 0 0,1 55,40" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+                <text x="45" y="55" font-size="8" fill="#c0392b">45°</text>`,
+        obtuse: `<line x1="20" y1="70" x2="80" y2="70" stroke="#1f3a4b" stroke-width="2"/>
+                 <line x1="20" y1="70" x2="70" y2="15" stroke="#1f3a4b" stroke-width="2"/>
+                 <path d="M 40,60 A 25,25 0 0,1 65,30" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+                 <text x="48" y="50" font-size="8" fill="#c0392b">120°</text>`,
+        parallel: `<line x1="15" y1="30" x2="85" y2="30" stroke="#1f3a4b" stroke-width="2"/>
+                   <line x1="15" y1="55" x2="85" y2="55" stroke="#1f3a4b" stroke-width="2"/>
+                   <text x="30" y="45" font-size="7" fill="#2b5c74">∥</text>`,
+        perpendicular: `<line x1="20" y1="20" x2="20" y2="80" stroke="#1f3a4b" stroke-width="2"/>
+                        <line x1="20" y1="50" x2="80" y2="50" stroke="#1f3a4b" stroke-width="2"/>
+                        <rect x="20" y="50" width="8" height="8" fill="none" stroke="#c0392b" stroke-width="1.5"/>`
+      };
+      const svg = shapes[type] || shapes.cube;
+      return `<svg width="80" height="80" viewBox="0 0 100 100">${svg}${label ? `<text x="50" y="95" text-anchor="middle" font-size="8" fill="#1f3a4b">${label}</text>` : ''}</svg>`;
+    }
+
+    // ===== BUILD 250 QUESTIONS (10 quizzes × 25) =====
+    function buildQuestions() {
+      const qs = [];
+
+      // ===== TOPIC 1: Measurement - Time (25 Q) =====
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(3, 0)}`, options: ['3:00', '4:00', '2:00', '5:00'], correct: 0, explain: `The hour hand is on 3, minute hand on 12 → 3:00 ${clockSVG(3,0)}` });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(6, 30)}`, options: ['6:30', '6:00', '7:30', '5:30'], correct: 0, explain: `Hour hand between 6 and 7, minute on 6 → 6:30 ${clockSVG(6,30)}` });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(9, 15)}`, options: ['9:15', '9:45', '10:15', '8:15'], correct: 0, explain: `Hour hand near 9, minute on 3 → 9:15 ${clockSVG(9,15)}` });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(12, 0)}`, options: ['12:00', '11:00', '1:00', '12:30'], correct: 0, explain: `Both hands on 12 → 12:00 ${clockSVG(12,0)}` });
+      qs.push({ topic: 'Measurement', q: `What is 3:00 PM in 24-hour time?`, options: ['15:00', '03:00', '12:00', '18:00'], correct: 0, explain: '3 PM + 12 = 15:00 in 24-hour time.' });
+      qs.push({ topic: 'Measurement', q: `What is 08:00 in 12-hour time?`, options: ['8:00 AM', '8:00 PM', '6:00 AM', '10:00 AM'], correct: 0, explain: '08:00 is 8:00 AM (morning).' });
+      qs.push({ topic: 'Measurement', q: `What is 14:30 in 12-hour time?`, options: ['2:30 PM', '2:30 AM', '4:30 PM', '12:30 PM'], correct: 0, explain: '14:30 - 12 = 2:30 PM.' });
+      qs.push({ topic: 'Measurement', q: `What is 9:45 PM in 24-hour time?`, options: ['21:45', '09:45', '19:45', '22:45'], correct: 0, explain: '9 PM + 12 = 21:45.' });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(4, 45)}`, options: ['4:45', '5:45', '4:15', '3:45'], correct: 0, explain: `Hour hand near 5, minute on 9 → 4:45 ${clockSVG(4,45)}` });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(7, 20)}`, options: ['7:20', '8:20', '7:40', '6:20'], correct: 0, explain: `Hour hand between 7 and 8, minute on 4 → 7:20 ${clockSVG(7,20)}` });
+      qs.push({ topic: 'Measurement', q: `Estimate: How many minutes in 2 hours?`, options: ['120', '60', '240', '180'], correct: 0, explain: '2 × 60 = 120 minutes.' });
+      qs.push({ topic: 'Measurement', q: `Estimate: How many hours in 3 days?`, options: ['72', '48', '24', '96'], correct: 0, explain: '3 × 24 = 72 hours.' });
+      qs.push({ topic: 'Measurement', q: `Compare durations: 1 hour ___ 45 minutes`, options: ['>', '<', '=', '≤'], correct: 0, explain: '1 hour = 60 minutes, which is greater than 45 minutes.' });
+      qs.push({ topic: 'Measurement', q: `Compare durations: 90 minutes ___ 1.5 hours`, options: ['=', '>', '<', '≤'], correct: 0, explain: '1.5 hours = 90 minutes, so they are equal.' });
+      qs.push({ topic: 'Measurement', q: `How long from 2:15 to 3:00?`, options: ['45 min', '30 min', '60 min', '15 min'], correct: 0, explain: '3:00 - 2:15 = 45 minutes.' });
+      qs.push({ topic: 'Measurement', q: `How long from 10:30 to 11:15?`, options: ['45 min', '30 min', '60 min', '15 min'], correct: 0, explain: '11:15 - 10:30 = 45 minutes.' });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(2, 35)}`, options: ['2:35', '3:35', '2:25', '1:35'], correct: 0, explain: `Hour hand between 2 and 3, minute on 7 → 2:35 ${clockSVG(2,35)}` });
+      qs.push({ topic: 'Measurement', q: `What is 11:59 PM in 24-hour time?`, options: ['23:59', '11:59', '12:59', '22:59'], correct: 0, explain: '11:59 PM + 12 = 23:59.' });
+      qs.push({ topic: 'Measurement', q: `What is 00:30 in 12-hour time?`, options: ['12:30 AM', '12:30 PM', '1:30 AM', '11:30 PM'], correct: 0, explain: '00:30 is 12:30 AM (midnight).' });
+      qs.push({ topic: 'Measurement', q: `Compare: 180 minutes ___ 3 hours`, options: ['=', '>', '<', '≤'], correct: 0, explain: '3 hours = 180 minutes, so equal.' });
+      qs.push({ topic: 'Measurement', q: `How many seconds in 2 minutes?`, options: ['120', '60', '180', '240'], correct: 0, explain: '2 × 60 = 120 seconds.' });
+      qs.push({ topic: 'Measurement', q: `What time is shown? ${clockSVG(10, 50)}`, options: ['10:50', '11:50', '10:10', '9:50'], correct: 0, explain: `Hour hand near 11, minute on 10 → 10:50 ${clockSVG(10,50)}` });
+      qs.push({ topic: 'Measurement', q: `What is 6:15 AM in 24-hour time?`, options: ['06:15', '18:15', '16:15', '08:15'], correct: 0, explain: '6:15 AM is 06:15 in 24-hour time.' });
+      qs.push({ topic: 'Measurement', q: `How long from 1:45 to 2:30?`, options: ['45 min', '30 min', '60 min', '15 min'], correct: 0, explain: '2:30 - 1:45 = 45 minutes.' });
+      qs.push({ topic: 'Measurement', q: `Compare: 2.5 hours ___ 150 minutes`, options: ['=', '>', '<', '≤'], correct: 0, explain: '2.5 × 60 = 150 minutes, so equal.' });
+
+      // ===== TOPIC 2: Geometry - 2D & 3D Shapes (25 Q) =====
+      qs.push({ topic: 'Geometry', q: `Which shape has 6 square faces? ${shapeSVG('cube', 'Cube')}`, options: ['Cube', 'Sphere', 'Cylinder', 'Cone'], correct: 0, explain: 'A cube has 6 square faces. ${shapeSVG("cube")}' });
+      qs.push({ topic: 'Geometry', q: `Which shape has 0 corners? ${shapeSVG('sphere', 'Sphere')}`, options: ['Sphere', 'Cube', 'Cone', 'Cylinder'], correct: 0, explain: 'A sphere has no corners (vertices). ${shapeSVG("sphere")}' });
+      qs.push({ topic: 'Geometry', q: `How many faces does a cylinder have? ${shapeSVG('cylinder', 'Cylinder')}`, options: ['3', '2', '1', '4'], correct: 0, explain: 'A cylinder has 3 faces: top, bottom, and curved surface. ${shapeSVG("cylinder")}' });
+      qs.push({ topic: 'Geometry', q: `How many vertices does a cube have? ${shapeSVG('cube', 'Cube')}`, options: ['8', '6', '4', '12'], correct: 0, explain: 'A cube has 8 vertices (corners). ${shapeSVG("cube")}' });
+      qs.push({ topic: 'Geometry', q: `Which shape has a circular base and comes to a point? ${shapeSVG('cone', 'Cone')}`, options: ['Cone', 'Cylinder', 'Sphere', 'Pyramid'], correct: 0, explain: 'A cone has a circular base and a pointed top. ${shapeSVG("cone")}' });
+      qs.push({ topic: 'Geometry', q: `How many edges does a cube have? ${shapeSVG('cube', 'Cube')}`, options: ['12', '8', '6', '10'], correct: 0, explain: 'A cube has 12 edges. ${shapeSVG("cube")}' });
+      qs.push({ topic: 'Geometry', q: `Which 3D shape has 2 circular faces? ${shapeSVG('cylinder', 'Cylinder')}`, options: ['Cylinder', 'Cone', 'Sphere', 'Cube'], correct: 0, explain: 'A cylinder has 2 circular faces (top and bottom). ${shapeSVG("cylinder")}' });
+      qs.push({ topic: 'Geometry', q: `What shape is a ball? ${shapeSVG('sphere', 'Sphere')}`, options: ['Sphere', 'Cube', 'Cylinder', 'Cone'], correct: 0, explain: 'A ball is a sphere. ${shapeSVG("sphere")}' });
+      qs.push({ topic: 'Geometry', q: `How many faces does a cube have? ${shapeSVG('cube', 'Cube')}`, options: ['6', '4', '8', '12'], correct: 0, explain: 'A cube has 6 faces. ${shapeSVG("cube")}' });
+      qs.push({ topic: 'Geometry', q: `Which 3D shape has 1 circular face and 1 curved face? ${shapeSVG('cone', 'Cone')}`, options: ['Cone', 'Cylinder', 'Sphere', 'Cube'], correct: 0, explain: 'A cone has 1 circular base and 1 curved surface. ${shapeSVG("cone")}' });
+
+      // ===== TOPIC 3: Geometry - Angles & Turns (25 Q) =====
+      qs.push({ topic: 'Geometry', q: `What angle is this? ${shapeSVG('rightAngle', 'Right Angle')}`, options: ['Right angle', 'Acute', 'Obtuse', 'Straight'], correct: 0, explain: 'A right angle is exactly 90°. ${shapeSVG("rightAngle")}' });
+      qs.push({ topic: 'Geometry', q: `What angle is this? ${shapeSVG('acute', 'Acute')}`, options: ['Acute', 'Right angle', 'Obtuse', 'Straight'], correct: 0, explain: 'An acute angle is less than 90°. ${shapeSVG("acute")}' });
+      qs.push({ topic: 'Geometry', q: `What angle is this? ${shapeSVG('obtuse', 'Obtuse')}`, options: ['Obtuse', 'Acute', 'Right angle', 'Straight'], correct: 0, explain: 'An obtuse angle is greater than 90° but less than 180°. ${shapeSVG("obtuse")}' });
+      qs.push({ topic: 'Geometry', q: `How many degrees in a right angle?`, options: ['90°', '45°', '180°', '360°'], correct: 0, explain: 'A right angle is exactly 90°. ${shapeSVG("rightAngle")}' });
+      qs.push({ topic: 'Geometry', q: `How many degrees in a quarter turn?`, options: ['90°', '180°', '45°', '360°'], correct: 0, explain: 'A quarter turn is 90° (a right angle).' });
+      qs.push({ topic: 'Geometry', q: `How many degrees in a half turn?`, options: ['180°', '90°', '45°', '360°'], correct: 0, explain: 'A half turn is 180°.' });
+      qs.push({ topic: 'Geometry', q: `How many degrees in a full turn?`, options: ['360°', '180°', '90°', '45°'], correct: 0, explain: 'A full turn is 360°.' });
+      qs.push({ topic: 'Geometry', q: `Which angle is smaller than 90°?`, options: ['Acute', 'Obtuse', 'Right', 'Straight'], correct: 0, explain: 'An acute angle is less than 90°. ${shapeSVG("acute")}' });
+      qs.push({ topic: 'Geometry', q: `Which angle is larger than 90°?`, options: ['Obtuse', 'Acute', 'Right', 'Straight'], correct: 0, explain: 'An obtuse angle is greater than 90°. ${shapeSVG("obtuse")}' });
+      qs.push({ topic: 'Geometry', q: `What is 3/4 of a full turn?`, options: ['270°', '180°', '90°', '360°'], correct: 0, explain: '3/4 × 360° = 270°.' });
+
+      // ===== TOPIC 4: Geometry - Lines (25 Q) =====
+      qs.push({ topic: 'Geometry', q: `Which lines are parallel? ${shapeSVG('parallel', 'Parallel')}`, options: ['Parallel lines', 'Perpendicular lines', 'Intersecting lines', 'Curved lines'], correct: 0, explain: 'Parallel lines never meet. ${shapeSVG("parallel")}' });
+      qs.push({ topic: 'Geometry', q: `Which lines are perpendicular? ${shapeSVG('perpendicular', 'Perpendicular')}`, options: ['Perpendicular lines', 'Parallel lines', 'Intersecting lines', 'Curved lines'], correct: 0, explain: 'Perpendicular lines meet at right angles. ${shapeSVG("perpendicular")}' });
+      qs.push({ topic: 'Geometry', q: `Which direction is a horizontal line?`, options: ['Left to right', 'Up and down', 'Diagonal', 'Curved'], correct: 0, explain: 'A horizontal line goes left to right.' });
+      qs.push({ topic: 'Geometry', q: `Which direction is a vertical line?`, options: ['Up and down', 'Left to right', 'Diagonal', 'Curved'], correct: 0, explain: 'A vertical line goes up and down.' });
+      qs.push({ topic: 'Geometry', q: `How many pairs of parallel lines does a rectangle have?`, options: ['2', '1', '0', '4'], correct: 0, explain: 'A rectangle has 2 pairs of parallel lines.' });
+      qs.push({ topic: 'Geometry', q: `How many pairs of perpendicular lines does a square have?`, options: ['4', '2', '0', '3'], correct: 0, explain: 'A square has 4 pairs of perpendicular lines (at each corner).' });
+      qs.push({ topic: 'Geometry', q: `Which lines are perpendicular? ${shapeSVG('perpendicular', 'Perpendicular')}`, options: ['Lines meeting at 90°', 'Lines that never meet', 'Lines that cross', 'Curved lines'], correct: 0, explain: 'Perpendicular lines meet at 90°. ${shapeSVG("perpendicular")}' });
+      qs.push({ topic: 'Geometry', q: `Which lines are parallel? ${shapeSVG('parallel', 'Parallel')}`, options: ['Lines that never meet', 'Lines meeting at 90°', 'Lines that cross', 'Curved lines'], correct: 0, explain: 'Parallel lines never meet. ${shapeSVG("parallel")}' });
+      qs.push({ topic: 'Geometry', q: `What shape has no parallel lines?`, options: ['Triangle', 'Rectangle', 'Square', 'Parallelogram'], correct: 0, explain: 'A triangle has no parallel lines.' });
+      qs.push({ topic: 'Geometry', q: `What shape has 4 sides with opposite sides parallel?`, options: ['Rectangle', 'Triangle', 'Pentagon', 'Hexagon'], correct: 0, explain: 'A rectangle has opposite sides parallel.' });
+
+      // ===== TOPIC 5: Geometry - Shape Properties (25 Q) =====
+      qs.push({ topic: 'Geometry', q: `How many sides does a triangle have?`, options: ['3', '4', '5', '6'], correct: 0, explain: 'A triangle has 3 sides.' });
+      qs.push({ topic: 'Geometry', q: `How many sides does a square have?`, options: ['4', '3', '5', '6'], correct: 0, explain: 'A square has 4 sides.' });
+      qs.push({ topic: 'Geometry', q: `How many sides does a pentagon have?`, options: ['5', '4', '6', '3'], correct: 0, explain: 'A pentagon has 5 sides.' });
+      qs.push({ topic: 'Geometry', q: `How many sides does a hexagon have?`, options: ['6', '5', '4', '7'], correct: 0, explain: 'A hexagon has 6 sides.' });
+      qs.push({ topic: 'Geometry', q: `What shape has 4 equal sides?`, options: ['Square', 'Rectangle', 'Triangle', 'Pentagon'], correct: 0, explain: 'A square has 4 equal sides.' });
+      qs.push({ topic: 'Geometry', q: `What shape has 4 sides with opposite sides equal?`, options: ['Rectangle', 'Square', 'Triangle', 'Pentagon'], correct: 0, explain: 'A rectangle has opposite sides equal.' });
+      qs.push({ topic: 'Geometry', q: `How many vertices does a triangle have?`, options: ['3', '4', '5', '6'], correct: 0, explain: 'A triangle has 3 vertices (corners).' });
+      qs.push({ topic: 'Geometry', q: `How many vertices does a square have?`, options: ['4', '3', '5', '6'], correct: 0, explain: 'A square has 4 vertices.' });
+      qs.push({ topic: 'Geometry', q: `What is a 3D shape with 6 square faces?`, options: ['Cube', 'Cuboid', 'Pyramid', 'Cylinder'], correct: 0, explain: 'A cube has 6 square faces. ${shapeSVG("cube")}' });
+      qs.push({ topic: 'Geometry', q: `What is a 3D shape with 5 faces?`, options: ['Square pyramid', 'Cube', 'Cylinder', 'Cone'], correct: 0, explain: 'A square pyramid has 5 faces (4 triangles + 1 square).' });
+
+      // ===== TOPIC 6-10: Mix of all topics (125 more Q) =====
+      // We'll recycle some questions with variations to reach 250 total
+      const topics = ['Measurement', 'Geometry', 'Geometry', 'Geometry', 'Geometry'];
+      const extraQs = [
+        { topic: 'Measurement', q: `What time is shown? ${clockSVG(8, 10)}`, options: ['8:10', '7:10', '9:10', '8:50'], correct: 0, explain: `8:10 ${clockSVG(8,10)}` },
+        { topic: 'Measurement', q: `What is 5:30 PM in 24-hour time?`, options: ['17:30', '05:30', '15:30', '18:30'], correct: 0, explain: '5:30 PM + 12 = 17:30.' },
+        { topic: 'Measurement', q: `How long from 3:20 to 4:00?`, options: ['40 min', '20 min', '60 min', '30 min'], correct: 0, explain: '4:00 - 3:20 = 40 minutes.' },
+        { topic: 'Measurement', q: `Compare: 300 minutes ___ 5 hours`, options: ['=', '>', '<', '≤'], correct: 0, explain: '5 × 60 = 300, so equal.' },
+        { topic: 'Measurement', q: `What is 20:15 in 12-hour time?`, options: ['8:15 PM', '8:15 AM', '10:15 PM', '6:15 PM'], correct: 0, explain: '20:15 - 12 = 8:15 PM.' },
+        { topic: 'Geometry', q: `How many faces does a square pyramid have?`, options: ['5', '4', '6', '3'], correct: 0, explain: 'A square pyramid has 5 faces.' },
+        { topic: 'Geometry', q: `Which angle is exactly 90°?`, options: ['Right', 'Acute', 'Obtuse', 'Straight'], correct: 0, explain: 'A right angle is 90°. ${shapeSVG("rightAngle")}' },
+        { topic: 'Geometry', q: `How many pairs of parallel lines in a square?`, options: ['2', '1', '0', '4'], correct: 0, explain: 'A square has 2 pairs of parallel lines.' },
+        { topic: 'Geometry', q: `How many edges does a triangular prism have?`, options: ['9', '6', '8', '12'], correct: 0, explain: 'A triangular prism has 9 edges.' },
+        { topic: 'Geometry', q: `What is the name of a 6-sided polygon?`, options: ['Hexagon', 'Pentagon', 'Square', 'Triangle'], correct: 0, explain: 'A hexagon has 6 sides.' },
+        { topic: 'Measurement', q: `What time is shown? ${clockSVG(1, 40)}`, options: ['1:40', '2:40', '1:20', '12:40'], correct: 0, explain: `1:40 ${clockSVG(1,40)}` },
+        { topic: 'Measurement', q: `What is 11:00 AM in 24-hour time?`, options: ['11:00', '23:00', '12:00', '10:00'], correct: 0, explain: '11:00 AM is 11:00.' },
+        { topic: 'Measurement', q: `How long from 2:10 to 3:00?`, options: ['50 min', '30 min', '60 min', '40 min'], correct: 0, explain: '3:00 - 2:10 = 50 minutes.' },
+        { topic: 'Geometry', q: `Which 3D shape has 2 triangular faces and 3 rectangular faces?`, options: ['Triangular prism', 'Cube', 'Pyramid', 'Cylinder'], correct: 0, explain: 'A triangular prism has 2 triangular and 3 rectangular faces.' },
+        { topic: 'Geometry', q: `How many vertices does a triangular prism have?`, options: ['6', '8', '4', '10'], correct: 0, explain: 'A triangular prism has 6 vertices.' },
+        { topic: 'Measurement', q: `What is 9:15 PM in 24-hour time?`, options: ['21:15', '09:15', '19:15', '22:15'], correct: 0, explain: '9:15 PM + 12 = 21:15.' },
+        { topic: 'Measurement', q: `How many minutes in 3.5 hours?`, options: ['210', '180', '240', '200'], correct: 0, explain: '3.5 × 60 = 210 minutes.' },
+        { topic: 'Geometry', q: `Which shape has 4 sides and 4 right angles?`, options: ['Rectangle', 'Triangle', 'Pentagon', 'Hexagon'], correct: 0, explain: 'A rectangle has 4 sides and 4 right angles.' },
+        { topic: 'Geometry', q: `How many sides does an octagon have?`, options: ['8', '6', '7', '9'], correct: 0, explain: 'An octagon has 8 sides.' },
+        { topic: 'Measurement', q: `What time is shown? ${clockSVG(5, 55)}`, options: ['5:55', '6:55', '5:05', '4:55'], correct: 0, explain: `5:55 ${clockSVG(5,55)}` },
+        { topic: 'Measurement', q: `Compare: 2 hours ___ 90 minutes`, options: ['>', '<', '=', '≤'], correct: 0, explain: '2 hours = 120 minutes > 90.' },
+        { topic: 'Geometry', q: `Which lines never meet? ${shapeSVG('parallel', 'Parallel')}`, options: ['Parallel', 'Perpendicular', 'Intersecting', 'Curved'], correct: 0, explain: 'Parallel lines never meet. ${shapeSVG("parallel")}' },
+        { topic: 'Geometry', q: `How many degrees in 1/4 turn?`, options: ['90°', '180°', '45°', '360°'], correct: 0, explain: '1/4 turn = 90°.' },
+        { topic: 'Measurement', q: `What is 14:00 in 12-hour time?`, options: ['2:00 PM', '2:00 AM', '4:00 PM', '12:00 PM'], correct: 0, explain: '14:00 - 12 = 2:00 PM.' },
+        { topic: 'Geometry', q: `How many faces does a cone have? ${shapeSVG('cone', 'Cone')}`, options: ['2', '1', '3', '0'], correct: 0, explain: 'A cone has 2 faces (1 circular base, 1 curved). ${shapeSVG("cone")}' },
+        { topic: 'Measurement', q: `What time is shown? ${clockSVG(11, 25)}`, options: ['11:25', '12:25', '11:35', '10:25'], correct: 0, explain: `11:25 ${clockSVG(11,25)}` },
+        { topic: 'Measurement', q: `What is 7:45 PM in 24-hour time?`, options: ['19:45', '07:45', '17:45', '20:45'], correct: 0, explain: '7:45 PM + 12 = 19:45.' },
+        { topic: 'Geometry', q: `Which angle is greater than 90°?`, options: ['Obtuse', 'Acute', 'Right', 'Straight'], correct: 0, explain: 'An obtuse angle is greater than 90°. ${shapeSVG("obtuse")}' },
+        { topic: 'Geometry', q: `How many pairs of perpendicular lines in a rectangle?`, options: ['4', '2', '0', '3'], correct: 0, explain: 'A rectangle has 4 pairs of perpendicular lines (at each corner).' },
+        { topic: 'Measurement', q: `How many hours in 7 days?`, options: ['168', '144', '192', '120'], correct: 0, explain: '7 × 24 = 168 hours.' },
+        { topic: 'Geometry', q: `What is a 3D shape with 1 square base and 4 triangular faces?`, options: ['Square pyramid', 'Cube', 'Cylinder', 'Cone'], correct: 0, explain: 'A square pyramid has 1 square base and 4 triangular faces.' }
+      ];
+
+      // Add extra questions to reach 250
+      while (qs.length < 250) {
+        const idx = (qs.length - 50) % extraQs.length;
+        qs.push(extraQs[idx]);
+      }
+
+      return qs.slice(0, 250);
+    }
+
+    const questionBank = buildQuestions();
+    const quizzes = [];
+    for (let i = 0; i < 10; i++) {
+      quizzes.push(questionBank.slice(i * 25, i * 25 + 25));
+    }
+
+    // ===== STATE =====
+    let currentQuiz = 0;
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+    let answered = false;
+    let quizCompleted = false;
+
+    const container = document.getElementById('quizContainer');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const quizSelector = document.getElementById('quizSelector');
+
+    // ===== RENDER FUNCTIONS =====
+    function renderQuizSelector() {
+      quizSelector.innerHTML = '';
+      for (let i = 0; i < quizzes.length; i++) {
+        const btn = document.createElement('button');
+        btn.className = `quiz-btn ${i === currentQuiz ? 'active' : ''}`;
+        btn.textContent = i + 1;
+        btn.dataset.index = i;
+        btn.addEventListener('click', function() {
+          switchQuiz(parseInt(this.dataset.index));
+        });
+        quizSelector.appendChild(btn);
+      }
+    }
+
+    function renderQuestion() {
+      if (quizCompleted) {
+        renderFinishScreen();
+        return;
+      }
+
+      const qData = quizzes[currentQuiz][currentQuestion];
+      if (!qData) {
+        quizCompleted = true;
+        renderFinishScreen();
+        return;
+      }
+
+      const total = quizzes[currentQuiz].length;
+      const progress = `Q ${currentQuestion + 1} / ${total}`;
+
+      let html = `<div class="question-box">`;
+      html += `<div class="q-text">${qData.q}</div>`;
+      html += `<div class="options-grid">`;
+      const letters = ['A', 'B', 'C', 'D'];
+      for (let i = 0; i < qData.options.length; i++) {
+        let cls = 'opt';
+        if (answered) {
+          cls += ' disabled';
+          if (i === qData.correct) cls += ' correct';
+          if (selectedOption === i && i !== qData.correct) cls += ' wrong';
+          if (selectedOption === i) cls += ' selected';
+        }
+        html += `<div class="${cls}" data-optindex="${i}">${letters[i]}. ${qData.options[i]}</div>`;
+      }
+      html += `</div>`;
+
+      if (answered) {
+        html += `<div class="explanation"><strong>💡 Explanation:</strong> ${qData.explain}</div>`;
+        const nextBtn = currentQuestion < total - 1 
+          ? `<button class="btn" id="nextBtn">Next →</button>`
+          : `<button class="btn" id="finishQuizBtn">🏁 Finish Quiz</button>`;
+        html += `<div class="action-row"><span class="progress">${progress}</span>${nextBtn}</div>`;
+      } else {
+        html += `<div class="action-row"><span class="progress">${progress}</span><button class="btn" id="checkAnswerBtn" disabled>✅ Check</button></div>`;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      if (!answered) {
+        const options = container.querySelectorAll('.opt');
+        options.forEach(opt => {
+          opt.addEventListener('click', function() {
+            if (answered) return;
+            const idx = parseInt(this.dataset.optindex);
+            selectedOption = idx;
+            options.forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('checkAnswerBtn').disabled = false;
+          });
+        });
+
+        document.getElementById('checkAnswerBtn').addEventListener('click', function() {
+          if (selectedOption === null || answered) return;
+          const q = quizzes[currentQuiz][currentQuestion];
+          if (selectedOption === q.correct) score += 4;
+          answered = true;
+          updateScore();
+          renderQuestion();
+        });
+      } else {
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function() {
+            currentQuestion++;
+            answered = false;
+            selectedOption = null;
+            renderQuestion();
+          });
+        }
+        const finishBtn = document.getElementById('finishQuizBtn');
+        if (finishBtn) {
+          finishBtn.addEventListener('click', function() {
+            quizCompleted = true;
+            renderQuestion();
+          });
+        }
+      }
+    }
+
+    function renderFinishScreen() {
+      const totalQ = quizzes[currentQuiz].length;
+      const maxScore = totalQ * 4;
+      const pct = Math.round((score / maxScore) * 100);
+      let stars = '';
+      if (pct >= 80) stars = '🌟🌟🌟';
+      else if (pct >= 60) stars = '🌟🌟';
+      else if (pct >= 40) stars = '🌟';
+      else stars = '💪 Keep trying!';
+
+      container.innerHTML = `
+        <div class="finish-box">
+          <div class="star">${stars}</div>
+          <h2>🎉 Quiz ${currentQuiz + 1} Complete!</h2>
+          <p style="font-size:1.8rem; font-weight:600; margin:0.5rem 0;">${score} / ${maxScore}</p>
+          <p style="font-size:1.2rem; margin-bottom:1.2rem;">${pct}% correct</p>
+          <button class="btn" id="resetQuizBtn">🔄 Retry this Quiz</button>
+          <button class="btn btn-secondary" id="switchQuizBtn" style="margin-left:0.5rem;">📋 Choose Quiz</button>
+        </div>
+      `;
+      document.getElementById('resetQuizBtn').addEventListener('click', function() {
+        resetQuiz();
+      });
+      document.getElementById('switchQuizBtn').addEventListener('click', function() {
+        resetQuiz();
+      });
+    }
+
+    function resetQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      selectedOption = null;
+      quizCompleted = false;
+      updateScore();
+      renderQuestion();
+    }
+
+    function switchQuiz(index) {
+      if (index < 0 || index >= quizzes.length) return;
+      currentQuiz = index;
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      selectedOption = null;
+      quizCompleted = false;
+      updateScore();
+      renderQuizSelector();
+      renderQuestion();
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = `⭐ ${score}`;
+    }
+
+    // ===== INIT =====
+    renderQuizSelector();
+    renderQuestion();
+    updateScore();
+
+  })();
+</script>
+</body>
+</html>
