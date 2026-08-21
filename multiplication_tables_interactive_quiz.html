@@ -1,15 +1,1139 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Multiplication Tables Quiz</title><style>
-body{font-family:Arial;margin:0;background:#f3f6fb;color:#172033}.wrap{max-width:900px;margin:25px auto;padding:15px}.card{background:white;padding:25px;border-radius:18px;box-shadow:0 5px 20px #0001;margin-bottom:18px}h1{text-align:center;color:#3730a3}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.grid label{display:block;padding:12px;text-align:center;border:2px solid #ddd;border-radius:10px;cursor:pointer}.grid input{display:none}.grid input:checked+label{background:#4f46e5;color:white;border-color:#4f46e5}.row{margin:20px 0}.row input{padding:10px;font-size:18px;width:100px}.btn{border:0;border-radius:10px;padding:12px 18px;font-size:16px;font-weight:bold;cursor:pointer}.primary{background:#4f46e5;color:white}.secondary{background:#e2e8f0}.hidden{display:none}.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}.timer{background:#fef3c7;padding:10px 15px;border-radius:20px;font-weight:bold}.progress{height:10px;background:#e5e7eb;border-radius:10px;margin:18px 0;overflow:hidden}.bar{height:100%;background:#4f46e5;width:0}.q{font-size:25px;font-weight:bold;padding:18px;border:2px solid #e5e7eb;border-radius:14px;margin:12px 0}.ans{width:110px;padding:9px;font-size:22px;text-align:center;border:2px solid #bbb;border-radius:8px}.nav{text-align:right;margin-top:20px}.score{text-align:center;font-size:60px;color:#4f46e5;font-weight:bold}.review div{padding:12px;border-bottom:1px solid #ddd}.good{background:#ecfdf5}.bad{background:#fff1f2}.error{color:#c00;margin-top:10px}@media(max-width:600px){.grid{grid-template-columns:repeat(4,1fr)}.q{font-size:21px}}
-</style></head><body><div class="wrap">
-<div class="card" id="setup"><h1>✖️ Multiplication Tables Quiz</h1><p>Select the tables and number of questions.</p><h2>1. Tables</h2><button class="btn secondary" onclick="allTables(true)">Select All</button> <button class="btn secondary" onclick="allTables(false)">Clear All</button><div class="grid" id="tables"></div><h2>2. Number of Questions</h2><div class="row"><input id="count" type="number" min="1" max="100" value="10"> questions</div><div id="error" class="error"></div><button class="btn primary" onclick="start()">🚀 Submit & Start Quiz</button></div>
-<div class="card hidden" id="quiz"><div class="top"><h2>Multiplication Quiz</h2><div class="timer">⏱️ <span id="clock">00:00</span></div></div><div id="info"></div><div class="progress"><div class="bar" id="bar"></div></div><div id="qs"></div><div class="nav"><button class="btn primary" onclick="finish()">🏁 Finish Quiz</button></div></div>
-<div class="card hidden" id="result"><h1>🎉 Quiz Complete!</h1><div class="score" id="score"></div><h2 style="text-align:center">Time taken: <span id="time"></span></h2><p id="message" style="text-align:center;font-size:19px"></p><div class="review"><h2>Answer Review</h2><div id="review"></div></div><p style="text-align:center"><button class="btn primary" onclick="newQuiz()">🔄 New Quiz</button></p></div>
-</div><script>
-const tables=document.getElementById('tables');for(let i=1;i<=20;i++){tables.innerHTML+=`<span><input id="t${i}" type="checkbox" value="${i}"><label for="t${i}">${i} ×</label></span>`}
-let qs=[],startTime,timer,done=false;function allTables(v){document.querySelectorAll('#tables input').forEach(x=>x.checked=v)}
-function start(){let selected=[...document.querySelectorAll('#tables input:checked')].map(x=>+x.value),n=+document.getElementById('count').value;let err=document.getElementById('error');if(!selected.length){err.textContent='Please select at least one table.';return}if(!Number.isInteger(n)||n<1||n>100){err.textContent='Please enter between 1 and 100 questions.';return}err.textContent='';qs=[];for(let i=0;i<n;i++){let a=selected[Math.floor(Math.random()*selected.length)],b=Math.floor(Math.random()*12)+1;qs.push({a,b,answer:a*b})}document.getElementById('setup').classList.add('hidden');document.getElementById('result').classList.add('hidden');document.getElementById('quiz').classList.remove('hidden');document.getElementById('info').textContent=`${n} questions • Tables: ${selected.join(', ')}`;render();startTime=Date.now();clearInterval(timer);timer=setInterval(tick,1000);tick()}
-function render(){let c=document.getElementById('qs');c.innerHTML='';qs.forEach((q,i)=>{c.innerHTML+=`<div class="q"><small>Question ${i+1} of ${qs.length}</small><br>${q.a} × ${q.b} = <input class="ans" id="a${i}" type="number" inputmode="numeric"></div>`});document.querySelectorAll('.ans').forEach((x,i)=>{x.addEventListener('input',progress);x.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(i<qs.length-1)document.getElementById('a'+(i+1)).focus();else finish()}})});document.getElementById('a0').focus();progress()}
-function progress(){let filled=[...document.querySelectorAll('.ans')].filter(x=>x.value.trim()!=='').length;document.getElementById('bar').style.width=(filled/qs.length*100)+'%'}function tick(){document.getElementById('clock').textContent=fmt(Math.floor((Date.now()-startTime)/1000))}function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-function finish(){if(done)return;done=true;clearInterval(timer);let elapsed=Math.floor((Date.now()-startTime)/1000),correct=0,review='';qs.forEach((q,i)=>{let v=document.getElementById('a'+i).value.trim(),ok=v!==''&&Number(v)===q.answer;if(ok)correct++;review+=`<div class="${ok?'good':'bad'}"><b>${i+1}. ${q.a} × ${q.b}</b> ${ok?'✅':'❌'}<br>Your answer: ${v||'Not answered'}<br>Correct answer: ${q.answer}</div>`});let pct=Math.round(correct/qs.length*100);document.getElementById('quiz').classList.add('hidden');document.getElementById('result').classList.remove('hidden');document.getElementById('score').textContent=pct+'%';document.getElementById('time').textContent=fmt(elapsed);document.getElementById('message').textContent=`${correct} out of ${qs.length} correct. ${pct===100?'🌟 Perfect!':pct>=90?'🏆 Excellent!':pct>=75?'👏 Great job!':pct>=50?'💪 Good effort!':'🌈 Keep practising!'}`;document.getElementById('review').innerHTML=review}
-function newQuiz(){clearInterval(timer);done=false;document.getElementById('result').classList.add('hidden');document.getElementById('quiz').classList.add('hidden');document.getElementById('setup').classList.remove('hidden')}
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplication Tables Quiz</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    color: #172033;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.10);
+}
+
+h1 {
+    text-align: center;
+    color: #3730a3;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+}
+
+.table-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.table-option {
+    position: relative;
+}
+
+.table-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.table-option label {
+    display: block;
+    text-align: center;
+    padding: 12px 8px;
+    border: 2px solid #dbe2ea;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    background: #f8fafc;
+}
+
+.table-option input:checked + label {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 13px 20px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary {
+    background: #4f46e5;
+    color: white;
+}
+
+.primary:hover {
+    background: #4338ca;
+}
+
+.secondary {
+    background: #e2e8f0;
+    color: #172033;
+}
+
+.select-all-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.number-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.number-row input {
+    width: 120px;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid #dbe2ea;
+    border-radius: 10px;
+}
+
+.submit-row {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.timer {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.progress {
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #4f46e5;
+}
+
+.question-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+.question-number {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.question {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.answer-input {
+    width: 150px;
+    padding: 10px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.answer-input:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.result {
+    text-align: center;
+}
+
+.score {
+    font-size: 60px;
+    font-weight: bold;
+    color: #4f46e5;
+}
+
+.result-time {
+    font-size: 24px;
+    margin: 15px 0;
+}
+
+.review {
+    text-align: left;
+    margin-top: 30px;
+}
+
+.review-item {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.correct {
+    background: #ecfdf5;
+}
+
+.incorrect {
+    background: #fff1f2;
+}
+
+.error {
+    color: #dc2626;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .table-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .question {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- SETUP -->
+<div class="card" id="setupCard">
+
+    <h1>✖️ Multiplication Tables Quiz</h1>
+
+    <p class="subtitle">
+        Select the multiplication tables and number of questions.
+    </p>
+
+    <h2>1. Select Tables</h2>
+
+    <div class="select-all-row">
+        <button class="secondary" onclick="selectAll()">
+            Select All
+        </button>
+
+        <button class="secondary" onclick="clearAll()">
+            Clear All
+        </button>
+    </div>
+
+    <div class="table-grid" id="tableGrid"></div>
+
+    <h2>2. Number of Questions</h2>
+
+    <div class="number-row">
+        <label for="questionCount">
+            Number of questions:
+        </label>
+
+        <input
+            type="number"
+            id="questionCount"
+            value="10"
+            min="1"
+            max="100"
+        >
+    </div>
+
+    <div id="setupError" class="error"></div>
+
+    <div class="submit-row">
+        <button class="primary" onclick="startQuiz()">
+            🚀 Start Quiz
+        </button>
+    </div>
+
+</div>
+
+
+<!-- QUIZ -->
+<div class="card hidden" id="quizCard">
+
+    <div class="quiz-header">
+
+        <div>
+            <h2>Multiplication Quiz</h2>
+            <div id="quizInfo"></div>
+        </div>
+
+        <div class="timer">
+            ⏱️ Time:
+            <span id="timer">00:00</span>
+        </div>
+
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="navigation">
+
+        <button class="secondary" onclick="backToSetup()">
+            ← Cancel
+        </button>
+
+        <button class="primary" onclick="finishQuiz()">
+            🏁 Finish Quiz
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- RESULT -->
+<div class="card hidden result" id="resultCard">
+
+    <h1>🎉 Quiz Complete!</h1>
+
+    <div class="score" id="score"></div>
+
+    <div class="result-time">
+        ⏱️ Time Taken:
+        <strong id="resultTime"></strong>
+    </div>
+
+    <div id="resultMessage"></div>
+
+    <button class="primary" onclick="newQuiz()">
+        🔄 Start New Quiz
+    </button>
+
+    <div class="review">
+
+        <h2>Answer Review</h2>
+
+        <div id="reviewContainer"></div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let selectedTables = [];
+let questions = [];
+let startTime = null;
+let timerInterval = null;
+let quizFinished = false;
+
+
+/*
+    Create tables 1 to 20
+*/
+
+const tableGrid =
+    document.getElementById("tableGrid");
+
+for (let i = 1; i <= 20; i++) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "table-option";
+
+    wrapper.innerHTML = `
+        <input
+            type="checkbox"
+            id="table${i}"
+            value="${i}"
+        >
+
+        <label for="table${i}">
+            ${i} ×
+        </label>
+    `;
+
+    tableGrid.appendChild(wrapper);
+}
+
+
+/*
+    Select all tables
+*/
+
+function selectAll() {
+
+    document
+        .querySelectorAll("#tableGrid input")
+        .forEach(cb => {
+            cb.checked = true;
+        });
+}
+
+
+/*
+    Clear all tables
+*/
+
+function clearAll() {
+
+    document
+        .querySelectorAll("#tableGrid input")
+        .forEach(cb => {
+            cb.checked = false;
+        });
+}
+
+
+/*
+    Start quiz
+*/
+
+function startQuiz() {
+
+    const error =
+        document.getElementById("setupError");
+
+    error.textContent = "";
+
+    selectedTables =
+        Array.from(
+            document.querySelectorAll(
+                "#tableGrid input:checked"
+            )
+        ).map(cb => Number(cb.value));
+
+    const numberOfQuestions =
+        Number(
+            document.getElementById(
+                "questionCount"
+            ).value
+        );
+
+
+    if (selectedTables.length === 0) {
+
+        error.textContent =
+            "Please select at least one table.";
+
+        return;
+    }
+
+
+    if (
+        !Number.isInteger(numberOfQuestions) ||
+        numberOfQuestions < 1 ||
+        numberOfQuestions > 100
+    ) {
+
+        error.textContent =
+            "Please enter between 1 and 100 questions.";
+
+        return;
+    }
+
+
+    questions =
+        generateQuestions(
+            selectedTables,
+            numberOfQuestions
+        );
+
+
+    quizFinished = false;
+
+
+    document
+        .getElementById("setupCard")
+        .classList.add("hidden");
+
+    document
+        .getElementById("resultCard")
+        .classList.add("hidden");
+
+    document
+        .getElementById("quizCard")
+        .classList.remove("hidden");
+
+
+    document.getElementById("quizInfo").textContent =
+        `${numberOfQuestions} questions • Tables: ${selectedTables.join(", ")}`;
+
+
+    renderQuestions();
+
+    startTimer();
+}
+
+
+/*
+    Generate random questions
+
+    IMPORTANT:
+    The multiplier will ONLY be:
+    
+    2,3,4,5,6,7,8,9,11,12
+
+    Therefore:
+    ❌ 6 × 1 will never appear
+    ❌ 6 × 10 will never appear
+
+    But:
+    ✅ 6 × 2
+    ✅ 6 × 7
+    ✅ 6 × 9
+    ✅ 6 × 11
+    ✅ 6 × 12
+
+    can appear.
+*/
+
+function generateQuestions(
+    tables,
+    count
+) {
+
+    const generated = [];
+
+
+    // Easy multipliers deliberately excluded.
+    const allowedMultipliers = [
+        2, 3, 4, 5, 6, 7, 8, 9, 11, 12
+    ];
+
+
+    for (let i = 0; i < count; i++) {
+
+        // Random selected table
+        const table =
+            tables[
+                Math.floor(
+                    Math.random() *
+                    tables.length
+                )
+            ];
+
+
+        // Random multiplier from allowed list
+        const multiplier =
+            allowedMultipliers[
+                Math.floor(
+                    Math.random() *
+                    allowedMultipliers.length
+                )
+            ];
+
+
+        generated.push({
+
+            table: table,
+
+            multiplier: multiplier,
+
+            answer:
+                table * multiplier
+        });
+    }
+
+
+    return generated;
+}
+
+
+/*
+    Display questions
+*/
+
+function renderQuestions() {
+
+    const container =
+        document.getElementById(
+            "questionsContainer"
+        );
+
+    container.innerHTML = "";
+
+
+    questions.forEach(
+        (q, index) => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "question-card";
+
+
+            card.innerHTML = `
+
+                <div class="question-number">
+                    Question ${index + 1}
+                    of ${questions.length}
+                </div>
+
+                <div class="question">
+
+                    ${q.table}
+                    ×
+                    ${q.multiplier}
+                    =
+
+                    <input
+                        type="number"
+                        class="answer-input"
+                        id="answer${index}"
+                        data-index="${index}"
+                        autocomplete="off"
+                        inputmode="numeric"
+                    >
+
+                </div>
+            `;
+
+
+            container.appendChild(card);
+        }
+    );
+
+
+    updateProgress();
+
+
+    /*
+        Pressing Enter moves
+        to the next question.
+    */
+
+    document
+        .querySelectorAll(".answer-input")
+        .forEach(input => {
+
+            input.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (
+                        event.key === "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        const index =
+                            Number(
+                                this.dataset.index
+                            );
+
+
+                        if (
+                            index <
+                            questions.length - 1
+                        ) {
+
+                            document
+                                .getElementById(
+                                    `answer${index + 1}`
+                                )
+                                .focus();
+
+                        } else {
+
+                            finishQuiz();
+                        }
+                    }
+                }
+            );
+
+
+            input.addEventListener(
+                "input",
+                updateProgress
+            );
+        }
+    );
+
+
+    document
+        .getElementById("answer0")
+        .focus();
+}
+
+
+/*
+    Progress bar
+*/
+
+function updateProgress() {
+
+    const inputs =
+        document.querySelectorAll(
+            ".answer-input"
+        );
+
+
+    let answered = 0;
+
+
+    inputs.forEach(input => {
+
+        if (
+            input.value.trim() !== ""
+        ) {
+
+            answered++;
+        }
+    });
+
+
+    const percentage =
+        questions.length === 0
+            ? 0
+            : (
+                answered /
+                questions.length
+            ) * 100;
+
+
+    document
+        .getElementById("progressBar")
+        .style.width =
+        percentage + "%";
+}
+
+
+/*
+    Timer
+*/
+
+function startTimer() {
+
+    clearInterval(timerInterval);
+
+    startTime =
+        Date.now();
+
+    updateTimer();
+
+    timerInterval =
+        setInterval(
+            updateTimer,
+            1000
+        );
+}
+
+
+function updateTimer() {
+
+    if (!startTime) {
+        return;
+    }
+
+
+    const elapsed =
+        Math.floor(
+            (
+                Date.now() -
+                startTime
+            ) / 1000
+        );
+
+
+    document
+        .getElementById("timer")
+        .textContent =
+        formatTime(elapsed);
+}
+
+
+function formatTime(seconds) {
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+    const remainingSeconds =
+        seconds % 60;
+
+
+    return (
+        String(minutes)
+            .padStart(2, "0")
+        +
+        ":"
+        +
+        String(remainingSeconds)
+            .padStart(2, "0")
+    );
+}
+
+
+/*
+    Finish quiz
+*/
+
+function finishQuiz() {
+
+    if (quizFinished) {
+        return;
+    }
+
+
+    quizFinished = true;
+
+    clearInterval(timerInterval);
+
+
+    const timeTaken =
+        Math.floor(
+            (
+                Date.now() -
+                startTime
+            ) / 1000
+        );
+
+
+    let correctCount = 0;
+
+
+    const results =
+        questions.map(
+            (q, index) => {
+
+                const input =
+                    document.getElementById(
+                        `answer${index}`
+                    );
+
+
+                const value =
+                    input.value.trim();
+
+
+                const numericAnswer =
+                    value === ""
+                        ? null
+                        : Number(value);
+
+
+                const correct =
+                    numericAnswer ===
+                    q.answer;
+
+
+                if (correct) {
+                    correctCount++;
+                }
+
+
+                return {
+
+                    question:
+                        `${q.table} × ${q.multiplier}`,
+
+                    correctAnswer:
+                        q.answer,
+
+                    userAnswer:
+                        value === ""
+                            ? "Not answered"
+                            : value,
+
+                    correct:
+                        correct
+                };
+            }
+        );
+
+
+    const percentage =
+        Math.round(
+            (
+                correctCount /
+                questions.length
+            ) * 100
+        );
+
+
+    showResult(
+        correctCount,
+        questions.length,
+        percentage,
+        timeTaken,
+        results
+    );
+}
+
+
+/*
+    Show result
+*/
+
+function showResult(
+    correctCount,
+    total,
+    percentage,
+    timeTaken,
+    results
+) {
+
+    document
+        .getElementById("quizCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("resultCard")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("score")
+        .textContent =
+        `${percentage}%`;
+
+
+    document
+        .getElementById("resultTime")
+        .textContent =
+        formatTime(timeTaken);
+
+
+    let message;
+
+
+    if (percentage === 100) {
+
+        message =
+            "🌟 Perfect score! Amazing work!";
+
+    } else if (percentage >= 90) {
+
+        message =
+            "🏆 Excellent! You really know your tables!";
+
+    } else if (percentage >= 75) {
+
+        message =
+            "👏 Great job! Keep practising!";
+
+    } else if (percentage >= 50) {
+
+        message =
+            "💪 Good effort! More practice will make you faster.";
+
+    } else {
+
+        message =
+            "🌈 Keep practising. You will improve!";
+    }
+
+
+    document
+        .getElementById("resultMessage")
+        .textContent =
+        `${correctCount} out of ${total} correct. ${message}`;
+
+
+    const review =
+        document.getElementById(
+            "reviewContainer"
+        );
+
+
+    review.innerHTML = "";
+
+
+    results.forEach(
+        (r, index) => {
+
+            const div =
+                document.createElement("div");
+
+
+            div.className =
+                "review-item " +
+                (
+                    r.correct
+                        ? "correct"
+                        : "incorrect"
+                );
+
+
+            div.innerHTML = `
+
+                <strong>
+                    ${index + 1}.
+                    ${r.question}
+                    ${r.correct ? "✅" : "❌"}
+                </strong>
+
+                <div>
+                    Your answer:
+                    <strong>
+                        ${escapeHtml(
+                            r.userAnswer
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    Correct answer:
+                    <strong>
+                        ${r.correctAnswer}
+                    </strong>
+                </div>
+            `;
+
+
+            review.appendChild(div);
+        }
+    );
+}
+
+
+/*
+    Return to setup
+*/
+
+function backToSetup() {
+
+    if (quizFinished) {
+
+        newQuiz();
+
+        return;
+    }
+
+
+    if (
+        confirm(
+            "Are you sure you want to leave this quiz? Your answers will be lost."
+        )
+    ) {
+
+        clearInterval(
+            timerInterval
+        );
+
+        newQuiz();
+    }
+}
+
+
+/*
+    New quiz
+*/
+
+function newQuiz() {
+
+    clearInterval(
+        timerInterval
+    );
+
+
+    document
+        .getElementById("quizCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("resultCard")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("setupCard")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("setupError")
+        .textContent = "";
+}
+
+
+/*
+    Prevent HTML injection
+*/
+
+function escapeHtml(value) {
+
+    return String(value).replace(
+        /[&<>"']/g,
+        character => ({
+
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+
+        }[character])
+    );
+}
+
+</script>
+
+</body>
+</html>
