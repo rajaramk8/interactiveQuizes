@@ -205,12 +205,16 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
             border: 2px solid #e4edf3;
             transition: 0.1s;
+            position: relative;
         }
         .q-item .q-label {
             font-weight: 600;
             color: #2b5c74;
             font-size: 0.7rem;
             margin-bottom: 0.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .q-item .q-text {
             font-size: 1rem;
@@ -254,6 +258,17 @@
         }
         .q-item .q-status.correct { color: #1a6a3a; }
         .q-item .q-status.wrong { color: #9f3a3a; }
+        .q-item .time-taken {
+            font-size: 0.65rem;
+            color: #587585;
+            margin-top: 0.15rem;
+            text-align: center;
+        }
+        .q-item .slow-icon {
+            color: #e67e22;
+            font-size: 0.8rem;
+            margin-left: 0.3rem;
+        }
 
         .submit-bar {
             display: flex;
@@ -300,7 +315,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.8rem;
-            min-width: 360px;
+            min-width: 400px;
         }
         .detail-table th {
             background: #dce9f0;
@@ -308,6 +323,7 @@
             padding: 0.4rem 0.5rem;
             text-align: left;
             font-size: 0.75rem;
+            white-space: nowrap;
         }
         .detail-table td {
             padding: 0.35rem 0.5rem;
@@ -316,6 +332,9 @@
         }
         .detail-table tr.correct-row { background: #f0faf5; }
         .detail-table tr.wrong-row { background: #fdf0ee; }
+        .detail-table tr.slow-row td:first-child {
+            border-left: 3px solid #e67e22;
+        }
         .status-badge {
             display: inline-block;
             padding: 0.05rem 0.6rem;
@@ -325,6 +344,11 @@
         }
         .status-badge.correct { background: #8fc9a8; color: #05301a; }
         .status-badge.wrong { background: #d99c9c; color: #3f0e0e; }
+        .slow-indicator {
+            color: #e67e22;
+            font-size: 0.9rem;
+            margin-left: 0.2rem;
+        }
         .text-muted { color: #587585; font-size: 0.8rem; }
 
         @media (max-width: 400px) {
@@ -393,6 +417,7 @@
         let timerInterval = null;
         let seconds = 0;
         let quizSubmitted = false;
+        let questionStartTimes = {}; // track when each question was first answered
 
         // ---------- Generate checkboxes 1-20 ----------
         function generateCheckboxes() {
@@ -449,7 +474,8 @@
                     b: multiplier,
                     answer: table * multiplier,
                     userAnswer: null,
-                    correct: null
+                    correct: null,
+                    timeTaken: null
                 });
             }
 
@@ -461,7 +487,8 @@
                     b: multiplier,
                     answer: table * multiplier,
                     userAnswer: null,
-                    correct: null
+                    correct: null,
+                    timeTaken: null
                 });
             }
             return qs;
@@ -484,6 +511,7 @@
         }
 
         function getTimeString(sec) {
+            if (sec === null || sec === undefined) return '—';
             const mins = String(Math.floor(sec / 60)).padStart(2, '0');
             const secs = String(sec % 60).padStart(2, '0');
             return `${mins}:${secs}`;
@@ -498,7 +526,10 @@
                 const qNum = idx + 1;
                 html += `
                     <div class="q-item" data-index="${idx}">
-                        <div class="q-label">Q${qNum}</div>
+                        <div class="q-label">
+                            <span>Q${qNum}</span>
+                            <span class="time-taken" id="time-${idx}"></span>
+                        </div>
                         <div class="q-text">${q.a} × ${q.b} =</div>
                         <input type="number" id="ans-${idx}" placeholder="?" data-index="${idx}" inputmode="numeric">
                         <div class="q-status" id="status-${idx}"></div>
@@ -509,6 +540,13 @@
 
             const inputs = questionsContainer.querySelectorAll('input[type="number"]');
             inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const idx = parseInt(this.dataset.index);
+                    // Record when user starts working on this question
+                    if (!questionStartTimes[idx] && !questions[idx].correct) {
+                        questionStartTimes[idx] = seconds;
+                    }
+                });
                 input.addEventListener('input', function() {
                     const idx = parseInt(this.dataset.index);
                     const val = this.value.trim();
@@ -516,6 +554,15 @@
                         const num = parseInt(val, 10);
                         if (!isNaN(num)) {
                             questions[idx].userAnswer = num;
+                            // Record time taken when first answered
+                            if (!questions[idx].timeTaken && questionStartTimes[idx]) {
+                                questions[idx].timeTaken = seconds - questionStartTimes[idx];
+                                // Display time for this question
+                                const timeEl = document.getElementById(`time-${idx}`);
+                                if (timeEl) {
+                                    timeEl.textContent = getTimeString(questions[idx].timeTaken);
+                                }
+                            }
                         } else {
                             questions[idx].userAnswer = null;
                         }
@@ -552,6 +599,13 @@
             if (quizSubmitted) return;
             if (questions.length === 0) return;
 
+            // Record time for any questions that were answered but not timed
+            questions.forEach((q, idx) => {
+                if (q.userAnswer !== null && !isNaN(q.userAnswer) && !q.timeTaken && questionStartTimes[idx]) {
+                    q.timeTaken = seconds - questionStartTimes[idx];
+                }
+            });
+
             const allAnswered = questions.every(q => q.userAnswer !== null && !isNaN(q.userAnswer));
             if (!allAnswered) {
                 const unanswered = questions.filter(q => q.userAnswer === null || isNaN(q.userAnswer)).length;
@@ -565,6 +619,8 @@
             questions.forEach((q, idx) => {
                 const input = document.getElementById(`ans-${idx}`);
                 const statusEl = document.getElementById(`status-${idx}`);
+                const timeEl = document.getElementById(`time-${idx}`);
+                
                 if (q.userAnswer !== null && !isNaN(q.userAnswer)) {
                     const isCorrect = q.userAnswer === q.answer;
                     q.correct = isCorrect;
@@ -583,14 +639,26 @@
                     statusEl.textContent = `✖️ ${q.answer}`;
                     statusEl.className = 'q-status wrong';
                 }
+                
+                // Show time taken
+                if (q.timeTaken !== null && q.timeTaken !== undefined) {
+                    if (timeEl) {
+                        timeEl.textContent = `⏱️ ${getTimeString(q.timeTaken)}`;
+                    }
+                }
             });
 
             document.querySelectorAll('#questionsContainer input').forEach(inp => inp.disabled = true);
-            showResults(correctCount);
+            
+            // Calculate average time
+            const times = questions.filter(q => q.timeTaken !== null && q.timeTaken !== undefined).map(q => q.timeTaken);
+            const avgTime = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
+            
+            showResults(correctCount, avgTime);
         }
 
         // ---------- Show results ----------
-        function showResults(correctCount) {
+        function showResults(correctCount, avgTime) {
             const total = questions.length;
             const pct = Math.round((correctCount / total) * 100);
             const totalTime = seconds;
@@ -599,22 +667,31 @@
             questions.forEach((q, idx) => {
                 const isCorrect = q.correct === true;
                 const rowClass = isCorrect ? 'correct-row' : 'wrong-row';
+                const isSlow = q.timeTaken !== null && q.timeTaken > avgTime && avgTime > 0;
+                const slowClass = isSlow ? 'slow-row' : '';
                 const badge = isCorrect 
                     ? '<span class="status-badge correct">✔</span>' 
                     : '<span class="status-badge wrong">✖</span>';
                 const userAns = q.userAnswer !== null && !isNaN(q.userAnswer) ? q.userAnswer : '—';
+                const timeStr = q.timeTaken !== null ? getTimeString(q.timeTaken) : '—';
+                const slowIcon = isSlow ? '<span class="slow-indicator" title="Slower than average">🐢</span>' : '';
+                
                 detailRows += `
-                    <tr class="${rowClass}">
-                        <td>${idx+1}</td>
+                    <tr class="${rowClass} ${slowClass}">
+                        <td>${idx+1} ${slowIcon}</td>
                         <td>${q.a}×${q.b}</td>
                         <td>${q.answer}</td>
                         <td>${userAns}</td>
                         <td>${badge}</td>
+                        <td>${timeStr}</td>
                     </tr>
                 `;
             });
 
             document.querySelector('.submit-bar').style.display = 'none';
+
+            // Calculate how many were slower than average
+            const slowCount = questions.filter(q => q.timeTaken !== null && q.timeTaken > avgTime && avgTime > 0).length;
 
             questionsContainer.innerHTML = `
                 <div class="result-box">
@@ -622,15 +699,26 @@
                     <div class="result-stats">
                         <div class="stat"><div class="num">${pct}%</div><div class="label">Accuracy</div></div>
                         <div class="stat"><div class="num">${correctCount}/${total}</div><div class="label">Correct</div></div>
-                        <div class="stat"><div class="num">${getTimeString(totalTime)}</div><div class="label">Time</div></div>
-                        <div class="stat"><div class="num">${total}</div><div class="label">Questions</div></div>
+                        <div class="stat"><div class="num">${getTimeString(totalTime)}</div><div class="label">Total Time</div></div>
+                        <div class="stat"><div class="num">${getTimeString(Math.round(avgTime))}</div><div class="label">Avg Time/Q</div></div>
                     </div>
+                    ${slowCount > 0 ? `<div style="font-size:0.85rem; color:#e67e22; margin-bottom:0.5rem;">🐢 ${slowCount} question(s) were slower than average</div>` : ''}
                     <div class="detail-table">
                         <table>
-                            <thead><tr><th>#</th><th>Q</th><th>Ans</th><th>You</th><th></th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Q</th>
+                                    <th>Ans</th>
+                                    <th>You</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
                             <tbody>${detailRows}</tbody>
                         </table>
                     </div>
+                    <div style="font-size:0.75rem; color:#587585; margin:0.5rem 0;">🐢 = slower than average (${getTimeString(Math.round(avgTime))})</div>
                     <div class="btn-group">
                         <button class="btn" id="retryBtn">🔄 Retry</button>
                         <button class="btn btn-secondary" id="newQuizBtn">📋 New</button>
@@ -660,6 +748,7 @@
 
             questions = generateQuestions(tables, Math.min(Math.max(count, 1), 100));
             quizSubmitted = false;
+            questionStartTimes = {};
 
             setupForm.classList.add('hidden');
             quizArea.classList.remove('hidden');
